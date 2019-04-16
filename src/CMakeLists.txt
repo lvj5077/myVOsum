@@ -15,13 +15,14 @@ INCLUDE_DIRECTORIES ("/usr/local/include/eigen3/")
 # SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-2.4.13.6/build")
 # find_package( OpenCV 2.4 REQUIRED )
 SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build")
-# SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4/build") # SIFT
+# SET(OpenCV_DIR "/usr/local/Cellar/opencv@3/3.4.5_1")
+
 find_package( OpenCV 3.1 REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 link_directories(${OpenCV_LIB_DIR})
 
-include_directories( /Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include )
-
+include_directories( /usr/local/Cellar/opencv@3/3.4.5_1/include )
+set(${OpenCV_LIBS} /usr/local/Cellar/opencv@3/3.4.5_1/lib )
 
 SET(G2O_DIR "/Users/lingqiujin/Third_Party_Packages/g2o")
 SET(G2O_LIB "/Users/lingqiujin/Third_Party_Packages/g2o/lib/")
@@ -40,6 +41,7 @@ link_directories( ${CSparse_include_LIB} )
 ADD_LIBRARY( slamBase slamBase.cpp )
 TARGET_LINK_LIBRARIES( slamBase
    ${OpenCV_LIBS}
+   /usr/local/Cellar/opencv@3/3.4.5_1/lib/libopencv_xfeatures2d.a
 )
 
 ADD_LIBRARY( myG2Oedge myG2Oedge.cpp )

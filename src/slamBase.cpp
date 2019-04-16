@@ -1,6 +1,9 @@
 #include "slamBase.h"
 
-// #include <opencv2/xfeatures2d.hpp> // SIFT
+
+#include <opencv2/opencv.hpp>  
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/xfeatures2d.hpp> // SIFT
 
 slamBase::slamBase(void)
 {
@@ -114,14 +117,22 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 	vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
-    Ptr<FeatureDetector> detector = ORB::create();
-    Ptr<DescriptorExtractor> descriptor = ORB::create();
+    // Ptr<FeatureDetector> detector = ORB::create();
+    // Ptr<DescriptorExtractor> descriptor = ORB::create();
+    // detector->detect ( rgb1,keypoints_1 );
+    // detector->detect ( rgb2,keypoints_2 );
 
-    detector->detect ( rgb1,keypoints_1 );
-    detector->detect ( rgb2,keypoints_2 );
+    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
+    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
+	// cv::Ptr<Feature2D> f2dt = xfeatures2d::SURF::create();
+    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create();
 
-    descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
+    // cv::Ptr<Feature2D> f2d = ORB::create();
+    f2d->detect ( rgb1,keypoints_1 );
+    f2d->detect ( rgb2,keypoints_2 );
+
+    f2d->compute ( rgb1, keypoints_1, descriptors_1 );
+    f2d->compute ( rgb2, keypoints_2, descriptors_2 );
 
     Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
     vector<DMatch> match;

@@ -12,7 +12,7 @@ set(CMAKE_CXX_COMPILER_ID "Clang")
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
   "/usr/local/include/eigen3"
-  "/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include"
+  "/usr/local/Cellar/opencv@3/3.4.5_1/include"
   "/Users/lingqiujin/Third_Party_Packages/g2o"
   "/usr/local/Cellar/suite-sparse/5.3.0/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build"

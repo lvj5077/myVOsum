@@ -34,7 +34,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/objdetect/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/stitching/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/videostab/include"
-  "/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include"
+  "/usr/local/Cellar/opencv@3/3.4.5_1/include"
   "/Users/lingqiujin/Third_Party_Packages/g2o"
   "/usr/local/Cellar/suite-sparse/5.3.0/include"
   )

@@ -33,6 +33,74 @@ CAMERA_INTRINSIC_PARAMETERS slamBase::getCamera(){
 	return C;
 }
 
+
+SR4kFRAME slamBase::readSRFrame( string inFileName){
+    SR4kFRAME f;
+
+    int width = 176;
+    int height = 144;
+
+    cv::Mat I_gray = cv::Mat::zeros(height,width,CV_64F);
+
+    int size[3] = { width, height, 3 };
+    cv::Mat I_depth(3, size, CV_64F, cv::Scalar(10));
+
+    ifstream inFile(inFileName);
+    string str;
+
+    int lineIdx = 0;
+
+
+    while (getline(inFile, str))
+    {
+        lineIdx ++;
+        if (lineIdx > 0 && lineIdx<(height+1))
+        {
+            for (int i = 0; i < width; i++)
+            {
+                inFile >> I_depth.at<double>(int(lineIdx-1),i,2) ;
+            }
+        }
+
+        if (lineIdx > (height+1)*1 && lineIdx<(height+1)*2)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,0) ;
+            }
+        }
+        if (lineIdx > (height+1)*2 && lineIdx<(height+1)*3)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,1);
+            }
+        }
+
+        if (lineIdx > (height+1)*3 && lineIdx<(height+1)*4)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                inFile >> I_gray.at<double>(int(lineIdx-1 -(height+1)*3 ),i,0) ;
+            }
+        }
+
+    }
+
+    // I_gray = I_gray/256;
+    // I_gray.convertTo(I_gray,CV_8U);
+
+    I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
+
+    equalizeHist( I_gray, I_gray );
+
+    f.rgb = I_gray.clone();
+    f.depthXYZ = I_depth.clone();
+
+    return f;
+}
+
+
 void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 			vector<Point2f> &p_UVs1,vector<Point2f> &p_UVs2,vector<Point3f> &p_XYZs1,vector<Point3f> &p_XYZs2){
 
@@ -79,8 +147,8 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         cv::Point2f p1 = keypoints_1[m.queryIdx].pt;
         cv::Point2f p2 = keypoints_2[m.trainIdx].pt;
-        double d1 = double(depth1.ptr<unsigned short> ( int ( keypoints_1[m.queryIdx].pt.y ) ) [ int ( keypoints_1[m.queryIdx].pt.x ) ])/5000;
-        double d2 = double(depth2.ptr<unsigned short> ( int ( keypoints_2[m.trainIdx].pt.y ) ) [ int ( keypoints_2[m.trainIdx].pt.x ) ])/5000;
+        double d1 = double(depth1.ptr<unsigned short> ( int ( p1.y ) ) [ int ( p1.x ) ])/C.scale;
+        double d2 = double(depth2.ptr<unsigned short> ( int ( p2.y ) ) [ int ( p2.x ) ])/C.scale;
         if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
             continue;
 
@@ -98,6 +166,82 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
 }
+
+void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
+			vector<Point2f> &p_UVs1,vector<Point2f> &p_UVs2,vector<Point3f> &p_XYZs1,vector<Point3f> &p_XYZs2){
+
+	vector<KeyPoint> keypoints_1, keypoints_2;
+    Mat descriptors_1, descriptors_2;
+
+    Ptr<FeatureDetector> detector = ORB::create();
+    Ptr<DescriptorExtractor> descriptor = ORB::create();
+
+    detector->detect ( rgb1,keypoints_1 );
+    detector->detect ( rgb2,keypoints_2 );
+
+    descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
+    descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
+
+    Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
+    vector<DMatch> match;
+    matcher->match ( descriptors_1, descriptors_2, match );
+
+    double min_dist=10000, max_dist=0;
+
+    for ( int i = 0; i < descriptors_1.rows; i++ )
+    {
+        double dist = match[i].distance;
+        if ( dist < min_dist ) min_dist = dist;
+        if ( dist > max_dist ) max_dist = dist;
+    }
+
+    printf ( "-- Max dist : %f \n", max_dist );
+    printf ( "-- Min dist : %f \n", min_dist );
+
+    vector< DMatch > matches;
+    for ( int i = 0; i < descriptors_1.rows; i++ )
+    {
+        if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
+        {
+            matches.push_back ( match[i] );
+        }
+    }
+
+    cv::Mat imgMatches;
+    cout <<"Find total "<<matches.size()<<" matches."<<endl;
+    cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
+    cv::imshow( "matches", imgMatches );
+    cv::waitKey( 0 );
+
+    for ( DMatch m:matches )
+    {
+
+        cv::Point2f p1 = keypoints_1[m.queryIdx].pt;
+        cv::Point2f p2 = keypoints_2[m.trainIdx].pt;
+        double d1 = depth1.at<double>(int(p1.x),int(p1.y),0);
+        double d2 = depth2.at<double>(int(p2.x),int(p2.y),0);
+        if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
+            continue;
+
+        p_UVs1.push_back( p1 );
+		p_UVs2.push_back( p2 );
+
+        cv::Point3f p_XYZ;
+		p_XYZ.x = depth1.at<double>(int(p1.x),int(p1.y),0);
+		p_XYZ.y = depth1.at<double>(int(p1.x),int(p1.y),1);
+		p_XYZ.z = depth1.at<double>(int(p1.x),int(p1.y),2);
+        p_XYZs1.push_back( p_XYZ );
+		p_XYZ.x = depth1.at<double>(int(p2.x),int(p2.y),0);
+		p_XYZ.y = depth1.at<double>(int(p2.x),int(p2.y),1);
+		p_XYZ.z = depth1.at<double>(int(p2.x),int(p2.y),2);
+		p_XYZs2.push_back( p_XYZ );
+
+    }
+
+    // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
+    // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
+}
+
 
 
 cv::Point3f slamBase::point2dTo3d( cv::Point2f& point, double& d, CAMERA_INTRINSIC_PARAMETERS& camera )

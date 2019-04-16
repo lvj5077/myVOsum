@@ -29,15 +29,18 @@ int main( int argc, char** argv )
 	// C.fx = 520.9;
 	// C.fy = 521.0;
 	// C.scale = 5000;
-	// double camera_matrix_data[3][3] = {
-	//     {C.fx, 0, C.cx},
-	//     {0, C.fy, C.cy},
-	//     {0, 0, 1}
-	// };
-	// cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
+    CAMERA_INTRINSIC_PARAMETERS C_sr4k;
 
-    // string firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_0044.dat";
-    // string secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_0044.dat";
+    C_sr4k.cx = 88.5320;
+    C_sr4k.cy = 72.5102;
+    C_sr4k.fx = 222.6132;
+    C_sr4k.fy = 225.6439;
+    C_sr4k.scale = 1;
+    C_sr4k.depthL = 0.180;
+    C_sr4k.depthH = 7.000;
+
+    string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
+    string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_0002.dat";
 
     Mat rgb1 = imread ( "/Users/lingqiujin/Data/VOdata/color1.png", CV_LOAD_IMAGE_COLOR );
     Mat rgb2 = imread ( "/Users/lingqiujin/Data/VOdata/color2.png", CV_LOAD_IMAGE_COLOR );
@@ -49,7 +52,6 @@ int main( int argc, char** argv )
     vector<Point3f> p_XYZs1, p_XYZs2;
 
 
-
     Mat mat_r, vec_t;
     cv::Mat T = cv::Mat::eye(4,4,CV_64F);
     double rpE = 0;
@@ -57,6 +59,7 @@ int main( int argc, char** argv )
     pose_estimation myVO; 
     slamBase myBase; 
 
+    myBase.setCamera(C_sr4k);
     CAMERA_INTRINSIC_PARAMETERS C = myBase.getCamera();
 	double camera_matrix_data[3][3] = {
 	    {C.fx, 0, C.cx},
@@ -66,9 +69,12 @@ int main( int argc, char** argv )
 	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
 
 
+	SR4kFRAME f1 = myBase.readSRFrame(firstF);
+	SR4kFRAME f2 = myBase.readSRFrame(secondF);
+	myBase.find4kMatches(f1.rgb,f2.rgb,f1.depthXYZ,f2.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+	// /Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0001.dats
 
-
-    myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+    // myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
     myVO.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
     cout << mat_r <<endl<<vec_t<<endl;

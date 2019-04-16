@@ -145,6 +145,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /Users/lingqiujin/Third_Party_Packag
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/viz/include/opencv2/viz/viz3d.hpp
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/viz/include/opencv2/viz/vizcore.hpp
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/viz/include/opencv2/viz/widgets.hpp
+src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include/opencv2/xfeatures2d/cuda.hpp
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /usr/local/include/eigen3/Eigen/Cholesky
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /usr/local/include/eigen3/Eigen/Core
 src/CMakeFiles/slamBase.dir/slamBase.cpp.o: /usr/local/include/eigen3/Eigen/Geometry

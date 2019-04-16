@@ -1392,6 +1392,10 @@ opencv2/viz/viz3d.hpp
 opencv2/viz/types.hpp
 -
 
+/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include/opencv2/xfeatures2d/cuda.hpp
+opencv2/core/cuda.hpp
+/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include/opencv2/xfeatures2d/opencv2/core/cuda.hpp
+
 /usr/local/include/eigen3/Eigen/Cholesky
 Core
 /usr/local/include/eigen3/Eigen/Core

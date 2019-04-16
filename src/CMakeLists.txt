@@ -14,10 +14,13 @@ INCLUDE_DIRECTORIES ("/usr/local/include/eigen3/")
 
 # SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-2.4.13.6/build")
 # find_package( OpenCV 2.4 REQUIRED )
-SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build")
+# SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build")
+SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4/build") # SIFT
 find_package( OpenCV 3.1 REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 link_directories(${OpenCV_LIB_DIR})
+
+include_directories( /Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include )
 
 
 SET(G2O_DIR "/Users/lingqiujin/Third_Party_Packages/g2o")
@@ -39,14 +42,18 @@ TARGET_LINK_LIBRARIES( slamBase
    ${OpenCV_LIBS}
 )
 
-
-ADD_LIBRARY( pose_estimation pose_estimation.cpp )
-TARGET_LINK_LIBRARIES( pose_estimation
-   ${OpenCV_LIBS}
+ADD_LIBRARY( myG2Oedge myG2Oedge.cpp )
+TARGET_LINK_LIBRARIES( myG2Oedge
    g2o_core g2o_stuff g2o_types_sba g2o_csparse_extension 
    ${CSparse_include_LIB} 
 )
 
+
+ADD_LIBRARY( pose_estimation pose_estimation.cpp )
+TARGET_LINK_LIBRARIES( pose_estimation
+   ${OpenCV_LIBS}
+   myG2Oedge
+)
 
 ADD_EXECUTABLE( testT testT.cpp )
 TARGET_LINK_LIBRARIES( testT

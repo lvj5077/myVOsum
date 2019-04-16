@@ -1,4 +1,5 @@
 #include "pose_estimation.h" 
+#include "myG2Oedge.h"
 
 #include <iostream>
 #include <opencv2/core/core.hpp>
@@ -8,33 +9,38 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <Eigen/SVD>
-#include <g2o/core/base_vertex.h>
-#include <g2o/core/base_unary_edge.h>
-#include <g2o/core/block_solver.h>
-#include <g2o/core/optimization_algorithm_gauss_newton.h>
-#include <g2o/solvers/eigen/linear_solver_eigen.h>
-#include <g2o/types/sba/types_six_dof_expmap.h>
 
-#include <g2o/core/sparse_optimizer.h>
-#include <g2o/core/block_solver.h>
-#include <g2o/core/robust_kernel.h>
-#include <g2o/core/robust_kernel_impl.h>
-#include <g2o/core/optimization_algorithm_levenberg.h>
-#include <g2o/solvers/cholmod/linear_solver_cholmod.h>
-#include <g2o/types/slam3d/se3quat.h>
-#include <g2o/types/sba/types_six_dof_expmap.h>
-
-#include <g2o/types/slam3d/types_slam3d.h>
-#include <g2o/core/factory.h>
-#include <g2o/core/optimization_algorithm_factory.h>
-#include <g2o/core/optimization_algorithm_gauss_newton.h>
-
-#include <g2o/core/robust_kernel_factory.h>
-#include <g2o/solvers/eigen/linear_solver_eigen.h>
 
 
 #include <chrono>
 
+void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat& T){
+
+    int N = p_XYZs1.size();
+	cv::Mat firstM = cv::Mat::zeros(N,4,CV_64F);
+	cv::Mat secondM = cv::Mat::zeros(N,4,CV_64F);
+	for (int i=0;i<N;i++){
+	    firstM.at<double>(i,3) = 1.0;
+	    secondM.at<double>(i,3) = 1.0;
+
+	    firstM.at<double>(i,0) = (p_XYZs1[i]).x;
+	    secondM.at<double>(i,0) = (p_XYZs2[i]).x;
+
+	    firstM.at<double>(i,1) = (p_XYZs1[i]).y;
+	    secondM.at<double>(i,1) = (p_XYZs2[i]).y;
+
+	    firstM.at<double>(i,2) = (p_XYZs1[i]).z;
+	    secondM.at<double>(i,2) = (p_XYZs2[i]).z;
+	}
+	cv::Mat Tm;
+	cv::solve(firstM,secondM,Tm,DECOMP_SVD);
+	cv::transpose(Tm,Tm);
+	// cout << "Tm"<<endl<<Tm<<endl;
+	T = Tm;
+	// R= Tm(cv::Rect(0,0,3,3));
+	// tvecN = Tm(cv::Rect(3,0,1,3));
+
+}
 
 void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t ){
     Point3f p1, p2;     // center of mass
@@ -59,14 +65,14 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
     {
         W += Eigen::Vector3d ( q1[i].x, q1[i].y, q1[i].z ) * Eigen::Vector3d ( q2[i].x, q2[i].y, q2[i].z ).transpose();
     }
-    cout<<"W="<<W<<endl;
+    // cout<<"W="<<W<<endl;
 
     // SVD on W
     Eigen::JacobiSVD<Eigen::Matrix3d> svd ( W, Eigen::ComputeFullU|Eigen::ComputeFullV );
     Eigen::Matrix3d U = svd.matrixU();
     Eigen::Matrix3d V = svd.matrixV();
-    cout<<"U="<<U<<endl;
-    cout<<"V="<<V<<endl;
+    // cout<<"U="<<U<<endl;
+    // cout<<"V="<<V<<endl;
 
     Eigen::Matrix3d R_ = U* ( V.transpose() );
     Eigen::Vector3d t_ = Eigen::Vector3d ( p1.x, p1.y, p1.z ) - R_ * Eigen::Vector3d ( p2.x, p2.y, p2.z );
@@ -78,58 +84,11 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
           R_ ( 2,0 ), R_ ( 2,1 ), R_ ( 2,2 )
         );
     vec_t = ( Mat_<double> ( 3,1 ) << t_ ( 0,0 ), t_ ( 1,0 ), t_ ( 2,0 ) );
+
+
 }
 
-// g2o edge
-class EdgeProjectXYZRGBDPoseOnly : public g2o::BaseUnaryEdge<3, Eigen::Vector3d, g2o::VertexSE3Expmap>
-{
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
-    EdgeProjectXYZRGBDPoseOnly( const Eigen::Vector3d& point ) : _point(point) {}
 
-    virtual void computeError()
-    {
-        const g2o::VertexSE3Expmap* pose = static_cast<const g2o::VertexSE3Expmap*> ( _vertices[0] );
-        // measurement is p, point is p'
-        _error = _measurement - pose->estimate().map( _point );
-    }
-
-    virtual void linearizeOplus()
-    {
-        g2o::VertexSE3Expmap* pose = static_cast<g2o::VertexSE3Expmap *>(_vertices[0]);
-        g2o::SE3Quat T(pose->estimate());
-        Eigen::Vector3d xyz_trans = T.map(_point);
-        double x = xyz_trans[0];
-        double y = xyz_trans[1];
-        double z = xyz_trans[2];
-
-        _jacobianOplusXi(0,0) = 0;
-        _jacobianOplusXi(0,1) = -z;
-        _jacobianOplusXi(0,2) = y;
-        _jacobianOplusXi(0,3) = -1;
-        _jacobianOplusXi(0,4) = 0;
-        _jacobianOplusXi(0,5) = 0;
-
-        _jacobianOplusXi(1,0) = z;
-        _jacobianOplusXi(1,1) = 0;
-        _jacobianOplusXi(1,2) = -x;
-        _jacobianOplusXi(1,3) = 0;
-        _jacobianOplusXi(1,4) = -1;
-        _jacobianOplusXi(1,5) = 0;
-
-        _jacobianOplusXi(2,0) = -y;
-        _jacobianOplusXi(2,1) = x;
-        _jacobianOplusXi(2,2) = 0;
-        _jacobianOplusXi(2,3) = 0;
-        _jacobianOplusXi(2,4) = 0;
-        _jacobianOplusXi(2,5) = -1;
-    }
-
-    bool read ( istream& in ) {}
-    bool write ( ostream& out ) const {}
-protected:
-    Eigen::Vector3d _point;
-};
 
 void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t, Mat & T ){
     g2o::SparseOptimizer optimizer;
@@ -142,13 +101,6 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
     optimizer.setAlgorithm( solver );
 
     // vertex
-    // g2o::VertexSE3Expmap* pose = new g2o::VertexSE3Expmap(); // camera pose
-    // pose->setId(0);
-    // pose->setEstimate( g2o::SE3Quat(
-    //     Eigen::Matrix3d::Identity(),
-    //     Eigen::Vector3d( 0,0,0 )
-    // ) );
-    // optimizer.addVertex( pose );
     g2o::VertexSE3Expmap* pose = new g2o::VertexSE3Expmap(); // camera pose
     Eigen::Matrix3d R_mat;
     R_mat <<
@@ -156,10 +108,15 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
                mat_r.at<double> ( 1,0 ), mat_r.at<double> ( 1,1 ), mat_r.at<double> ( 1,2 ),
                mat_r.at<double> ( 2,0 ), mat_r.at<double> ( 2,1 ), mat_r.at<double> ( 2,2 );
     pose->setId ( 0 );
-    pose->setEstimate ( g2o::SE3Quat (
-                            R_mat,
-                            Eigen::Vector3d ( vec_t.at<double> ( 0,0 ), vec_t.at<double> ( 1,0 ), vec_t.at<double> ( 2,0 ) )
-                        ) );
+
+    pose->setEstimate( g2o::SE3Quat(
+        Eigen::Matrix3d::Identity(),
+        Eigen::Vector3d( 0,0,0 )
+    ) );
+    // pose->setEstimate ( g2o::SE3Quat (
+    //                         R_mat,
+    //                         Eigen::Vector3d ( vec_t.at<double> ( 0,0 ), vec_t.at<double> ( 1,0 ), vec_t.at<double> ( 2,0 ) )
+    //                     ) );
     optimizer.addVertex ( pose );
 
     // edges
@@ -188,38 +145,11 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
     cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
 
     cout<<endl<<"after optimization:"<<endl;
-    cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
+    // cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
 
     eigen2cv(Eigen::Isometry3d( pose->estimate() ).matrix(), T);
 
 }
-
-
-void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){
-
-    // Mat homography_matrix;
-    // homography_matrix = findHomography ( p_UVs1, p_UVs2, RANSAC, 3 );
-
-    // Mat fundamental_matrix;
-    // fundamental_matrix = findFundamentalMat ( p_UVs1, p_UVs2, CV_FM_8POINT );
-    // cout<<"fundamental_matrix is "<<endl<< fundamental_matrix<<endl;
-    // F =K^−T E K^-1
-
-    Point2d principal_point ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 )  );	
-    double focal_length = ( cameraMatrix.at<double> ( 0,0 ) + cameraMatrix.at<double> ( 1,1 ) ) /2;
-
-
-    Mat essential_matrix;
-    essential_matrix = findEssentialMat ( p_UVs1, p_UVs2, focal_length, principal_point );
-    cout<<"essential_matrix is "<<endl<< essential_matrix<<endl;
-
-    recoverPose ( essential_matrix, p_UVs1, p_UVs2, mat_r, vec_t, focal_length, principal_point );
-
-    cout<<"R is "<<endl<<mat_r<<endl;
-    cout<<"t is "<<endl<<vec_t<<endl<<endl;
-
-}
-void pose_estimation::pose2d2d_triangulation( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){}
 
 void pose_estimation::pose3d2d_PnP( vector<Point3f> & p_XYZs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix){
 
@@ -249,10 +179,16 @@ void pose_estimation::pose3d2d_BA( vector<Point3f> & p_XYZs1, vector<Point2f> & 
                mat_r.at<double> ( 1,0 ), mat_r.at<double> ( 1,1 ), mat_r.at<double> ( 1,2 ),
                mat_r.at<double> ( 2,0 ), mat_r.at<double> ( 2,1 ), mat_r.at<double> ( 2,2 );
     pose->setId ( 0 );
+    // pose->setEstimate( g2o::SE3Quat(
+    //     Eigen::Matrix3d::Identity(),
+    //     Eigen::Vector3d( 0,0,0 )
+    // ) );
+
     pose->setEstimate ( g2o::SE3Quat (
                             R_mat,
                             Eigen::Vector3d ( vec_t.at<double> ( 0,0 ), vec_t.at<double> ( 1,0 ), vec_t.at<double> ( 2,0 ) )
                         ) );
+    
     optimizer.addVertex ( pose );
 
     int index = 1;
@@ -266,9 +202,8 @@ void pose_estimation::pose3d2d_BA( vector<Point3f> & p_XYZs1, vector<Point2f> & 
     }
 
     // parameter: camera intrinsics
-    double focal_length = ( cameraMatrix.at<double> ( 0,0 ) + cameraMatrix.at<double> ( 1,1 ) ) /2;
     g2o::CameraParameters* camera = new g2o::CameraParameters (
-        focal_length, Eigen::Vector2d ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 ) ), 0
+        cameraMatrix.at<double> ( 0,0 ), Eigen::Vector2d ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 ) ), 0
     );
     camera->setId ( 0 );
     optimizer.addParameter ( camera );
@@ -297,6 +232,35 @@ void pose_estimation::pose3d2d_BA( vector<Point3f> & p_XYZs1, vector<Point2f> & 
     cout<<"optimization costs time: "<<time_used.count() <<" seconds."<<endl;
 
     cout<<endl<<"after optimization:"<<endl;
-    cout<<"T="<<endl<<Eigen::Isometry3d ( pose->estimate() ).matrix() <<endl;
-    eigen2cv(Eigen::Isometry3d( pose->estimate() ).matrix(), T);
+    // cout<<"T="<<endl<<Eigen::Isometry3d ( pose->estimate() ).matrix() <<endl;
+
+    eigen2cv(Eigen::Isometry3d ( pose->estimate() ).matrix(), T);
+    // cout<<"T="<<endl<<T <<endl;
 }
+
+
+void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){
+
+    // Mat homography_matrix;
+    // homography_matrix = findHomography ( p_UVs1, p_UVs2, RANSAC, 3 );
+
+    // Mat fundamental_matrix;
+    // fundamental_matrix = findFundamentalMat ( p_UVs1, p_UVs2, CV_FM_8POINT );
+    // cout<<"fundamental_matrix is "<<endl<< fundamental_matrix<<endl;
+    // F =K^−T E K^-1
+
+    Point2d principal_point ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 )  );	
+    double focal_length = ( cameraMatrix.at<double> ( 0,0 ) + cameraMatrix.at<double> ( 1,1 ) ) /2;
+
+
+    Mat essential_matrix;
+    essential_matrix = findEssentialMat ( p_UVs1, p_UVs2, focal_length, principal_point );
+    cout<<"essential_matrix is "<<endl<< essential_matrix<<endl;
+
+    recoverPose ( essential_matrix, p_UVs1, p_UVs2, mat_r, vec_t, focal_length, principal_point );
+
+    cout<<"R is "<<endl<<mat_r<<endl;
+    cout<<"t is "<<endl<<vec_t<<endl<<endl;
+
+}
+void pose_estimation::pose2d2d_triangulation( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){}

@@ -111,21 +111,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/CMakeFiles/slamBase.dir/rule:
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/slamBase.dir/rule
-.PHONY : src/CMakeFiles/slamBase.dir/rule
-
-# Convenience name for target.
-slamBase: src/CMakeFiles/slamBase.dir/rule
-
-.PHONY : slamBase
-
-# fast build rule for target.
-slamBase/fast:
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
-.PHONY : slamBase/fast
-
-# Convenience name for target.
 src/CMakeFiles/testT.dir/rule:
 	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/testT.dir/rule
 .PHONY : src/CMakeFiles/testT.dir/rule
@@ -154,6 +139,36 @@ pose_estimation: src/CMakeFiles/pose_estimation.dir/rule
 pose_estimation/fast:
 	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/build
 .PHONY : pose_estimation/fast
+
+# Convenience name for target.
+src/CMakeFiles/myG2Oedge.dir/rule:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/myG2Oedge.dir/rule
+.PHONY : src/CMakeFiles/myG2Oedge.dir/rule
+
+# Convenience name for target.
+myG2Oedge: src/CMakeFiles/myG2Oedge.dir/rule
+
+.PHONY : myG2Oedge
+
+# fast build rule for target.
+myG2Oedge/fast:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/build
+.PHONY : myG2Oedge/fast
+
+# Convenience name for target.
+src/CMakeFiles/slamBase.dir/rule:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/slamBase.dir/rule
+.PHONY : src/CMakeFiles/slamBase.dir/rule
+
+# Convenience name for target.
+slamBase: src/CMakeFiles/slamBase.dir/rule
+
+.PHONY : slamBase
+
+# fast build rule for target.
+slamBase/fast:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
+.PHONY : slamBase/fast
 
 # Convenience name for target.
 src/CMakeFiles/main.dir/rule:
@@ -196,6 +211,33 @@ main.s: main.cpp.s
 main.cpp.s:
 	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+myG2Oedge.o: myG2Oedge.cpp.o
+
+.PHONY : myG2Oedge.o
+
+# target to build an object file
+myG2Oedge.cpp.o:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.o
+.PHONY : myG2Oedge.cpp.o
+
+myG2Oedge.i: myG2Oedge.cpp.i
+
+.PHONY : myG2Oedge.i
+
+# target to preprocess a source file
+myG2Oedge.cpp.i:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.i
+.PHONY : myG2Oedge.cpp.i
+
+myG2Oedge.s: myG2Oedge.cpp.s
+
+.PHONY : myG2Oedge.s
+
+# target to generate assembly for a file
+myG2Oedge.cpp.s:
+	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.s
+.PHONY : myG2Oedge.cpp.s
 
 pose_estimation.o: pose_estimation.cpp.o
 
@@ -285,14 +327,18 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... slamBase"
-	@echo "... edit_cache"
 	@echo "... testT"
 	@echo "... pose_estimation"
+	@echo "... myG2Oedge"
+	@echo "... edit_cache"
+	@echo "... slamBase"
 	@echo "... main"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... myG2Oedge.o"
+	@echo "... myG2Oedge.i"
+	@echo "... myG2Oedge.s"
 	@echo "... pose_estimation.o"
 	@echo "... pose_estimation.i"
 	@echo "... pose_estimation.s"

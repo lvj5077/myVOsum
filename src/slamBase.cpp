@@ -1,5 +1,7 @@
 #include "slamBase.h"
 
+// #include <opencv2/xfeatures2d.hpp> // SIFT
+
 slamBase::slamBase(void)
 {
 	// C.cx = 325.141442;
@@ -104,6 +106,11 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 			vector<Point2f> &p_UVs1,vector<Point2f> &p_UVs2,vector<Point3f> &p_XYZs1,vector<Point3f> &p_XYZs2){
 
+	vector<Point2f> tp_UVs1;
+	vector<Point2f> tp_UVs2;
+	vector<Point3f> tp_XYZs1;
+	vector<Point3f> tp_XYZs2;
+
 	vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
@@ -140,8 +147,13 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
             matches.push_back ( match[i] );
         }
     }
+    cv::Mat imgMatches;
+    // cout <<"Find total "<<matches.size()<<" matches."<<endl;
+    // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
+    // cv::imshow( "matches", imgMatches );
+    // cv::waitKey( 0 );
 
-
+    vector< DMatch > valid3Dmatches;
     for ( DMatch m:matches )
     {
 
@@ -152,16 +164,49 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
             continue;
 
-        p_UVs1.push_back( p1 );
-		p_UVs2.push_back( p2 );
+        tp_UVs1.push_back( p1 );
+		tp_UVs2.push_back( p2 );
 
         cv::Point3f p_XYZ;
         p_XYZ = point2dTo3d(p1,d1,C);
-        p_XYZs1.push_back( p_XYZ );
+        tp_XYZs1.push_back( p_XYZ );
         p_XYZ = point2dTo3d(p2,d2,C);
-		p_XYZs2.push_back( p_XYZ );
+		tp_XYZs2.push_back( p_XYZ );
+
+		valid3Dmatches.push_back(m);
 
     }
+
+	double camera_matrix_data[3][3] = {
+	    {C.fx, 0, C.cx},
+	    {0, C.fy, C.cy},
+	    {0, 0, 1}
+	};
+	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
+    Mat rvec,tvec;
+    Mat inliers;
+    cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.99, inliers );
+    // cout <<"inliers: "<<inliers.rows<<endl;
+    // cout <<"R="<<rvec<<endl;
+    // cout <<"t="<<tvec<<endl;
+    vector< DMatch > RANSACmatches;
+    for ( int i=0;i<inliers.rows;i++)
+    {
+
+        p_UVs1.push_back( tp_UVs1[ inliers.ptr<int>(i)[0]  ] );
+		p_UVs2.push_back( tp_UVs2[ inliers.ptr<int>(i)[0]  ] );
+
+        p_XYZs1.push_back( tp_XYZs1[ inliers.ptr<int>(i)[0]  ] );
+		p_XYZs2.push_back( tp_XYZs2[ inliers.ptr<int>(i)[0]  ] );
+
+		RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]   );
+
+    }
+
+    cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
+    cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
+    cv::imshow( "matches", imgMatches );
+    cv::waitKey( 0 );
 
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
@@ -261,7 +306,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 
     mat_r.copyTo(T(cv::Rect(0, 0, 3, 3)));
     vec_t.copyTo(T(cv::Rect(3, 0, 1, 3)));
-	cout << "T "<<T<<endl;
+	
 
 	rpE = reprojectionError(p_XYZs1,p_XYZs2,T);
 
@@ -287,6 +332,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 }
 
 double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T ){
+	cout << "T = "<<endl<<T<<endl;
 	double rpE = 0;
         for (int i=0;i<p_XYZs1.size();i++){
             cv::Point3f pd1 = p_XYZs1[i];

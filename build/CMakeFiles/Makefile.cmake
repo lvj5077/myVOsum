@@ -65,8 +65,9 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "src/CMakeFiles/slamBase.dir/DependInfo.cmake"
   "src/CMakeFiles/testT.dir/DependInfo.cmake"
   "src/CMakeFiles/pose_estimation.dir/DependInfo.cmake"
+  "src/CMakeFiles/myG2Oedge.dir/DependInfo.cmake"
+  "src/CMakeFiles/slamBase.dir/DependInfo.cmake"
   "src/CMakeFiles/main.dir/DependInfo.cmake"
   )

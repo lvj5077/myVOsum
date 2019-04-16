@@ -12,6 +12,7 @@ set(CMAKE_CXX_COMPILER_ID "Clang")
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
   "/usr/local/include/eigen3"
+  "/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include"
   "/Users/lingqiujin/Third_Party_Packages/g2o"
   "/usr/local/Cellar/suite-sparse/5.3.0/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build"
@@ -42,6 +43,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src/CMakeFiles/slamBase.dir/DependInfo.cmake"
   "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src/CMakeFiles/pose_estimation.dir/DependInfo.cmake"
+  "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src/CMakeFiles/myG2Oedge.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

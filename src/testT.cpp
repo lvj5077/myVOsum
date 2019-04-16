@@ -42,11 +42,13 @@ int main( int argc, char** argv )
     string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
     string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_0002.dat";
 
-    Mat rgb1 = imread ( "/Users/lingqiujin/Data/VOdata/color1.png", CV_LOAD_IMAGE_COLOR );
-    Mat rgb2 = imread ( "/Users/lingqiujin/Data/VOdata/color2.png", CV_LOAD_IMAGE_COLOR );
+    Mat rgb1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.475318.png", CV_LOAD_IMAGE_COLOR );
+    Mat rgb2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.911185.png", CV_LOAD_IMAGE_COLOR );
 
-    Mat depth1 = imread ( "/Users/lingqiujin/Data/VOdata/depth1.png", CV_LOAD_IMAGE_UNCHANGED ); 
-    Mat depth2 = imread ( "/Users/lingqiujin/Data/VOdata/depth2.png", CV_LOAD_IMAGE_UNCHANGED );
+    Mat depth1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031102.462395.png", CV_LOAD_IMAGE_UNCHANGED ); 
+    Mat depth2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031102.926851.png", CV_LOAD_IMAGE_UNCHANGED );
+    // Mat depth1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031106.143355.png", CV_LOAD_IMAGE_UNCHANGED ); 
+    // Mat depth2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031106.130445.png", CV_LOAD_IMAGE_UNCHANGED );
 
     vector<Point2f> p_UVs1, p_UVs2;
     vector<Point3f> p_XYZs1, p_XYZs2;
@@ -60,6 +62,18 @@ int main( int argc, char** argv )
     slamBase myBase; 
 
     myBase.setCamera(C_sr4k);
+
+
+	SR4kFRAME f1 = myBase.readSRFrame(firstF);
+	SR4kFRAME f2 = myBase.readSRFrame(secondF);
+	
+	myBase.find4kMatches(f1.rgb,f2.rgb,f1.depthXYZ,f2.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+    // myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+
+
+
     CAMERA_INTRINSIC_PARAMETERS C = myBase.getCamera();
 	double camera_matrix_data[3][3] = {
 	    {C.fx, 0, C.cx},
@@ -69,36 +83,45 @@ int main( int argc, char** argv )
 	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
 
 
-	SR4kFRAME f1 = myBase.readSRFrame(firstF);
-	SR4kFRAME f2 = myBase.readSRFrame(secondF);
-	myBase.find4kMatches(f1.rgb,f2.rgb,f1.depthXYZ,f2.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-	// /Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0001.dats
 
-    // myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+
+    myVO.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
+    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
+    cout << "reprojection error pose3d3d_dirctSVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
     myVO.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << mat_r <<endl<<vec_t<<endl;
+    // cout << mat_r <<endl<<vec_t<<endl;
     rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << "reprojection error " << 1000*rpE<< " mm"<<endl<<endl;
+    cout << "reprojection error pose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
   
     myVO.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
     rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
-    cout << "reprojection error " << 1000*rpE<< " mm"<<endl<<endl;
+    cout << "reprojection error pose3d3d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
 
     myVO.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix);
-    cout << mat_r <<endl<<vec_t<<endl;
+    // cout << mat_r <<endl<<vec_t<<endl;
     rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << "reprojection error " << 1000*rpE<< " mm"<<endl<<endl;
+    cout << "reprojection error pose3d2d_PnP" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
     myVO.pose3d2d_BA( p_XYZs1, p_UVs2, mat_r, vec_t, T, cameraMatrix  );
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << "reprojection error " << 1000*rpE<< " mm"<<endl<<endl;
+    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
+    cout << "reprojection error pose3d2d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
     
+	double gt_data[4][4] = {
+	    {1.0000,         0,         0,   0.00},
+	    {0.0000,    1.0000,         0,   0.1},
+	    {0.0000,   0.0000,    1.0000,    0.00},
+	    {0,         0,         0,    1.0000}
+	};
+	cv::Mat Tgt( 4, 4, CV_64F, gt_data );
 
-    myVO.pose2d2d_8pts( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
-    myVO.pose2d2d_triangulation( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
+    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
+    cout << "reprojection error groundTruth" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+    // myVO.pose2d2d_8pts( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
+    // myVO.pose2d2d_triangulation( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
 
 
     return 0;

@@ -99,6 +99,7 @@ testT_EXTERNAL_OBJECTS =
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_imgcodecs.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_imgproc.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_core.3.4.5.dylib
+../bin/testT: ../lib/libmyG2Oedge.a
 ../bin/testT: src/CMakeFiles/testT.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/testT"
 	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/testT.dir/link.txt --verbose=$(VERBOSE)

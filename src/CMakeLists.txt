@@ -14,8 +14,8 @@ INCLUDE_DIRECTORIES ("/usr/local/include/eigen3/")
 
 # SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-2.4.13.6/build")
 # find_package( OpenCV 2.4 REQUIRED )
-# SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build")
-SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4/build") # SIFT
+SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build")
+# SET(OpenCV_DIR "/Users/lingqiujin/Third_Party_Packages/opencv-3.4/build") # SIFT
 find_package( OpenCV 3.1 REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 link_directories(${OpenCV_LIB_DIR})

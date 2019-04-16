@@ -6,41 +6,7 @@
 
 #IncludeRegexTransform: 
 
-../include/pose_estimation.h
-Eigen/Core
--
-Eigen/Geometry
--
-opencv2/core/core.hpp
--
-opencv2/highgui/highgui.hpp
--
-opencv2/calib3d/calib3d.hpp
--
-opencv2/core/eigen.hpp
--
-iostream
--
-
-/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.cpp
-pose_estimation.h
-/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.h
-iostream
--
-opencv2/core/core.hpp
--
-opencv2/features2d/features2d.hpp
--
-opencv2/highgui/highgui.hpp
--
-opencv2/calib3d/calib3d.hpp
--
-Eigen/Core
--
-Eigen/Geometry
--
-Eigen/SVD
--
+../include/myG2Oedge.h
 g2o/core/base_vertex.h
 -
 g2o/core/base_unary_edge.h
@@ -80,6 +46,52 @@ g2o/core/optimization_algorithm_gauss_newton.h
 g2o/core/robust_kernel_factory.h
 -
 g2o/solvers/eigen/linear_solver_eigen.h
+-
+Eigen/Core
+-
+Eigen/Geometry
+-
+Eigen/SVD
+-
+iostream
+-
+
+../include/pose_estimation.h
+Eigen/Core
+-
+Eigen/Geometry
+-
+opencv2/core/core.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+opencv2/calib3d/calib3d.hpp
+-
+opencv2/core/eigen.hpp
+-
+iostream
+-
+
+/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.cpp
+pose_estimation.h
+/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.h
+myG2Oedge.h
+/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/myG2Oedge.h
+iostream
+-
+opencv2/core/core.hpp
+-
+opencv2/features2d/features2d.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+opencv2/calib3d/calib3d.hpp
+-
+Eigen/Core
+-
+Eigen/Geometry
+-
+Eigen/SVD
 -
 chrono
 -
@@ -2265,6 +2277,10 @@ opencv2/viz/viz3d.hpp
 /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/viz/include/opencv2/viz/widgets.hpp
 opencv2/viz/types.hpp
 -
+
+/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include/opencv2/xfeatures2d/cuda.hpp
+opencv2/core/cuda.hpp
+/Users/lingqiujin/Third_Party_Packages/opencv_contrib/modules/xfeatures2d/include/opencv2/xfeatures2d/opencv2/core/cuda.hpp
 
 /usr/local/Cellar/suite-sparse/5.3.0/include/SuiteSparse_config.h
 limits.h

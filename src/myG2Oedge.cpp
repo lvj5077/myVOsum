@@ -37,3 +37,4 @@ void EdgeProjectXYZRGBDPoseOnly::linearizeOplus()
     _jacobianOplusXi(2,4) = 0;
     _jacobianOplusXi(2,5) = -1;
 }
+

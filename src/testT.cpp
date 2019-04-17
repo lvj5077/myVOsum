@@ -130,7 +130,7 @@ int main( int argc, char** argv )
 
 
 
-    int dataSize = 50;
+    int dataSize = 5;
     cv::Mat mroll(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
     cv::Mat mpitch(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
     cv::Mat myaw(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
@@ -192,12 +192,9 @@ int main( int argc, char** argv )
             myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
 
-            myVO_SR4k.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
-            // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
-            // T = cv::Mat::eye(4,4,CV_64F);
-            // mat_r.copyTo(T(cv::Rect(0, 0, 3, 3)));
-            // vec_t.copyTo(T(cv::Rect(3, 0, 1, 3)));
-            // myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
+            // myVO_SR4k.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
+            // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+            myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
             // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
 
             // myVO_SR4k.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix_4k);

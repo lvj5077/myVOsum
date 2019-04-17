@@ -116,7 +116,7 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
 
     pose->setEstimate( g2o::SE3Quat(
         Eigen::Matrix3d::Identity(),
-        Eigen::Vector3d( 0,0,0 )
+        Eigen::Vector3d( 0,0.2,0 )
     ) );
     // pose->setEstimate ( g2o::SE3Quat (
     //                         R_mat,
@@ -135,7 +135,18 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
         edge->setVertex( 0, dynamic_cast<g2o::VertexSE3Expmap*> (pose) );
         edge->setMeasurement( Eigen::Vector3d(
             p_XYZs1[i].x, p_XYZs1[i].y, p_XYZs1[i].z) );
-        edge->setInformation( Eigen::Matrix3d::Identity()*1e4 );
+
+        Eigen::Matrix3d information = Eigen::Matrix< double, 3,3 >::Identity();
+        // 信息矩阵是协方差矩阵的逆，表示我们对边的精度的预先估计
+        // 因为pose为6D的，信息矩阵是6*6的阵，假设位置和角度的估计精度均为0.1且互相独立
+        // 那么协方差则为对角为0.01的矩阵，信息阵则为100的矩阵
+        information(0,0) = 100;
+        information(1,1) = 10000;
+        information(2,2) = 100;
+        // information(3,3) = information(4,4) = information(5,5) = 100;
+
+        edge->setInformation( information );
+
         optimizer.addEdge(edge);
         index++;
         edges.push_back(edge);

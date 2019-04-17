@@ -42,7 +42,7 @@ void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f
 
 }
 
-void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t ){
+void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, Mat* T ){
     Point3f p1, p2;     // center of mass
     int N = p_XYZs1.size();
     for ( int i=0; i<N; i++ )
@@ -85,7 +85,12 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
         );
     vec_t = ( Mat_<double> ( 3,1 ) << t_ ( 0,0 ), t_ ( 1,0 ), t_ ( 2,0 ) );
 
-
+    if(T != NULL) {
+        Mat T_m = cv::Mat::eye(4,4,CV_64F);
+        mat_r.copyTo(T_m(cv::Rect(0, 0, 3, 3)));
+        vec_t.copyTo(T_m(cv::Rect(3, 0, 1, 3))); 
+        *T = T_m;
+    }
 }
 
 
@@ -142,21 +147,26 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
     optimizer.optimize(10);
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2-t1);
-    cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
+    // cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
 
-    cout<<endl<<"after optimization:"<<endl;
+    // cout<<endl<<"after optimization:"<<endl;
     // cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
 
     eigen2cv(Eigen::Isometry3d( pose->estimate() ).matrix(), T);
 
 }
 
-void pose_estimation::pose3d2d_PnP( vector<Point3f> & p_XYZs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix){
+void pose_estimation::pose3d2d_PnP( vector<Point3f> & p_XYZs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix, Mat* T ){
 
 	Mat vec_r;
     solvePnP ( p_XYZs1, p_UVs2, cameraMatrix, Mat(), vec_r, vec_t, false ); 
     cv::Rodrigues ( vec_r, mat_r ); 
-
+    if(T != NULL) {
+        Mat T_m = cv::Mat::eye(4,4,CV_64F);
+        mat_r.copyTo(T_m(cv::Rect(0, 0, 3, 3)));
+        vec_t.copyTo(T_m(cv::Rect(3, 0, 1, 3))); 
+        *T = T_m;
+    }
 }
 
 
@@ -229,9 +239,9 @@ void pose_estimation::pose3d2d_BA( vector<Point3f> & p_XYZs1, vector<Point2f> & 
     optimizer.optimize ( 100 );
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>> ( t2-t1 );
-    cout<<"optimization costs time: "<<time_used.count() <<" seconds."<<endl;
+    // cout<<"optimization costs time: "<<time_used.count() <<" seconds."<<endl;
 
-    cout<<endl<<"after optimization:"<<endl;
+    // cout<<endl<<"after optimization:"<<endl;
     // cout<<"T="<<endl<<Eigen::Isometry3d ( pose->estimate() ).matrix() <<endl;
 
     eigen2cv(Eigen::Isometry3d ( pose->estimate() ).matrix(), T);
@@ -239,7 +249,7 @@ void pose_estimation::pose3d2d_BA( vector<Point3f> & p_XYZs1, vector<Point2f> & 
 }
 
 
-void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){
+void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix, Mat* T  ){
 
     // Mat homography_matrix;
     // homography_matrix = findHomography ( p_UVs1, p_UVs2, RANSAC, 3 );
@@ -261,6 +271,11 @@ void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> &
 
     cout<<"R is "<<endl<<mat_r<<endl;
     cout<<"t is "<<endl<<vec_t<<endl<<endl;
-
+    if(T != NULL) {
+        Mat T_m = cv::Mat::eye(4,4,CV_64F);
+        mat_r.copyTo(T_m(cv::Rect(0, 0, 3, 3)));
+        vec_t.copyTo(T_m(cv::Rect(3, 0, 1, 3))); 
+        *T = T_m;
+    }
 }
-void pose_estimation::pose2d2d_triangulation( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix ){}
+void pose_estimation::pose2d2d_triangulation( vector<Point2f> & p_UVs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix , Mat* T ){}

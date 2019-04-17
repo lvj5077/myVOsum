@@ -89,7 +89,7 @@ testT_EXTERNAL_OBJECTS =
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_superres.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_videostab.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_viz.3.4.5.dylib
-../bin/testT: /usr/local/Cellar/opencv@3/3.4.5_1/lib/libopencv_xfeatures2d.a
+../bin/testT: /usr/local/Cellar/opencv@3/3.4.5_1/lib/libopencv_xfeatures2d.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_calib3d.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_features2d.3.4.5.dylib
 ../bin/testT: /Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build/lib/libopencv_flann.3.4.5.dylib

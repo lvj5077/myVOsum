@@ -8,9 +8,6 @@
 
 using namespace std;
 
-
-
-
 int main( int argc, char** argv )
 {
 
@@ -40,7 +37,7 @@ int main( int argc, char** argv )
     C_sr4k.depthH = 7.000;
 
     string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
-    string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_0002.dat";
+    string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0004.dat";
 
     Mat rgb1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.475318.png", CV_LOAD_IMAGE_COLOR );
     Mat rgb2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.911185.png", CV_LOAD_IMAGE_COLOR );
@@ -95,6 +92,11 @@ int main( int argc, char** argv )
     rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
     cout << "reprojection error pose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
+    myVO.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T);
+    // cout << mat_r <<endl<<vec_t<<endl;
+    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T );
+    cout << "reprojection error pose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
   
     myVO.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
     rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
@@ -112,7 +114,7 @@ int main( int argc, char** argv )
     
 	double gt_data[4][4] = {
 	    {1.0000,         0,         0,   0.00},
-	    {0.0000,    1.0000,         0,   0.1},
+	    {0.0000,    1.0000,         0,   0.10},
 	    {0.0000,   0.0000,    1.0000,    0.00},
 	    {0,         0,         0,    1.0000}
 	};
@@ -123,6 +125,142 @@ int main( int argc, char** argv )
     // myVO.pose2d2d_8pts( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
     // myVO.pose2d2d_triangulation( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
 
+
+
+
+
+
+    int dataSize = 50;
+    cv::Mat mroll(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+    cv::Mat mpitch(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+    cv::Mat myaw(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+    cv::Mat mx(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+    cv::Mat my(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+    cv::Mat mz(cv::Size(dataSize,dataSize),CV_64FC1, Scalar(0));
+
+
+    ofstream myfile;
+    myfile.open ("/Users/lingqiujin/Desktop/data.txt");
+    
+
+    int gN1 = 0;
+    int gN2 = 0;
+    for (int g1=0;g1<dataSize;g1++){
+        for(int g2=0;g2<dataSize;g2++){
+            gN1 = g1+1;
+            gN2 = g2+1;
+            if (gN1<10){
+                firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_000"+to_string(gN1)+".dat";
+            }else{
+                firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_00"+to_string(gN1)+".dat";
+            }
+            
+            if (gN2<10){
+                secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y4/frm_000"+to_string(gN2)+".dat";
+            }else{
+                secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y4/frm_00"+to_string(gN2)+".dat";
+            }
+            // if (gN1<10){
+            //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_000"+to_string(gN1)+".dat";
+            // }else{
+            //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_00"+to_string(gN1)+".dat";
+            // }
+            
+            // if (gN2<10){
+            //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_000"+to_string(gN2)+".dat";
+            // }else{
+            //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_00"+to_string(gN2)+".dat";
+            // }
+            cout << endl<<"load "<<firstF<<endl;
+            cout << "load "<<secondF<<endl;
+            pose_estimation myVO_SR4k; 
+            slamBase myBase_SR4k; 
+
+            myBase_SR4k.setCamera(C_sr4k);
+
+            C = myBase_SR4k.getCamera();
+            double camera_matrix_data_4k[3][3] = {
+                {C.fx, 0, C.cx},
+                {0, C.fy, C.cy},
+                {0, 0, 1}
+            };
+            cv::Mat cameraMatrix_4k( 3, 3, CV_64F, camera_matrix_data_4k );
+
+            SR4kFRAME f1_4k = myBase.readSRFrame(firstF);
+            SR4kFRAME f2_4k = myBase.readSRFrame(secondF);
+            
+            myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+
+            myVO_SR4k.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
+            // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
+            // T = cv::Mat::eye(4,4,CV_64F);
+            // mat_r.copyTo(T(cv::Rect(0, 0, 3, 3)));
+            // vec_t.copyTo(T(cv::Rect(3, 0, 1, 3)));
+            // myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
+            // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+
+            // myVO_SR4k.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix_4k);
+            double gt_data[4][4] = {
+                {1.0000,         0,         0,   0.00},
+                {0.0000,    1.0000,         0,   0.20},
+                {0.0000,   0.0000,    1.0000,    0.00},
+                {0,         0,         0,    1.0000}
+            };
+            cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+            double baseE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
+            rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T);
+            if (rpE>2*baseE){
+                cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+            }
+            
+
+            float roll,pitch,yaw;
+            float sy;
+            sy= sqrt(T.at<double>(0,0) * T.at<double>(0,0) +  T.at<double>(1,0) * T.at<double>(1,0) );
+            roll = atan2(T.at<double>(2,1) , T.at<double>(2,2));
+            pitch = atan2(-T.at<double>(2,0), sy);
+            yaw = atan2(T.at<double>(1,0), T.at<double>(0,0));
+
+
+            mroll.at<double>(g1,g2) = roll;
+            mpitch.at<double>(g1,g2) = pitch ;
+            myaw.at<double>(g1,g2) = yaw;
+
+            double x_mm = 1000*T.at<double>(0,3);
+            double y_mm = 1000*T.at<double>(1,3);
+            double z_mm = 1000*T.at<double>(2,3);
+
+            mx.at<double>(g1,g2) = x_mm ;
+            my.at<double>(g1,g2) = y_mm ;
+            mz.at<double>(g1,g2) = z_mm ;
+            
+            stringstream ss;
+            ss << roll<<","<<pitch<<","<<yaw<<","<< x_mm << ","<< y_mm<< "," << z_mm;
+
+            string rpy = ss.str();
+            myfile << rpy <<"\n";
+        }
+    }
+
+    myfile.close();
+
+
+    cv::Scalar mean,stddev;
+
+    cv::meanStdDev(mroll,mean,stddev);
+    cout <<"roll  mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
+    cv::meanStdDev(mpitch,mean,stddev);
+    cout <<"pitch mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
+    cv::meanStdDev(myaw,mean,stddev);
+    cout <<"Yaw   mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
+
+    cv::meanStdDev(mx,mean,stddev);
+    cout <<"mx  mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
+    cv::meanStdDev(my,mean,stddev);
+    cout <<"my mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
+    cv::meanStdDev(mz,mean,stddev);
+    cout <<"mz   mean: "<<mean.val[0]<<"  std: "<<stddev.val[0]<<endl;
 
     return 0;
 }

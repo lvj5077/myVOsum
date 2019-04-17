@@ -26,7 +26,7 @@ slamBase::slamBase(void)
 
 slamBase::~slamBase(void)
 {
-    cout << "Object is being deleted" << endl;
+    // cout << "Object is being deleted" << endl;
 }
 
 
@@ -92,12 +92,12 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     }
 
-    // I_gray = I_gray/256;
-    // I_gray.convertTo(I_gray,CV_8U);
+    I_gray = I_gray/16; //12bit
+    I_gray.convertTo(I_gray,CV_8U);
 
-    I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
+    // I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
 
-    equalizeHist( I_gray, I_gray );
+    // equalizeHist( I_gray, I_gray );
 
     f.rgb = I_gray.clone();
     f.depthXYZ = I_depth.clone();
@@ -117,22 +117,14 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 	vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
-    // Ptr<FeatureDetector> detector = ORB::create();
-    // Ptr<DescriptorExtractor> descriptor = ORB::create();
-    // detector->detect ( rgb1,keypoints_1 );
-    // detector->detect ( rgb2,keypoints_2 );
+    Ptr<FeatureDetector> detector = ORB::create();
+    Ptr<DescriptorExtractor> descriptor = ORB::create();
 
-    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
-	// cv::Ptr<Feature2D> f2dt = xfeatures2d::SURF::create();
-    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create();
+    detector->detect ( rgb1,keypoints_1 );
+    detector->detect ( rgb2,keypoints_2 );
 
-    // cv::Ptr<Feature2D> f2d = ORB::create();
-    f2d->detect ( rgb1,keypoints_1 );
-    f2d->detect ( rgb2,keypoints_2 );
-
-    f2d->compute ( rgb1, keypoints_1, descriptors_1 );
-    f2d->compute ( rgb2, keypoints_2, descriptors_2 );
+    descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
+    descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
 
     Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
     vector<DMatch> match;
@@ -147,8 +139,8 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         if ( dist > max_dist ) max_dist = dist;
     }
 
-    printf ( "-- Max dist : %f \n", max_dist );
-    printf ( "-- Min dist : %f \n", min_dist );
+    // printf ( "-- Max dist : %f \n", max_dist );
+    // printf ( "-- Min dist : %f \n", min_dist );
 
     vector< DMatch > matches;
     for ( int i = 0; i < descriptors_1.rows; i++ )
@@ -158,6 +150,7 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
             matches.push_back ( match[i] );
         }
     }
+
     cv::Mat imgMatches;
     // cout <<"Find total "<<matches.size()<<" matches."<<endl;
     // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
@@ -198,8 +191,8 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
     Mat inliers;
     cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.99, inliers );
     // cout <<"inliers: "<<inliers.rows<<endl;
-    // cout <<"R="<<rvec<<endl;
-    // cout <<"t="<<tvec<<endl;
+    cout <<"R="<<rvec<<endl;
+    cout <<"t="<<tvec<<endl;
     vector< DMatch > RANSACmatches;
     for ( int i=0;i<inliers.rows;i++)
     {
@@ -229,46 +222,76 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 	vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
-    Ptr<FeatureDetector> detector = ORB::create();
-    Ptr<DescriptorExtractor> descriptor = ORB::create();
+    vector<Point2f> tp_UVs1;
+    vector<Point2f> tp_UVs2;
+    vector<Point3f> tp_XYZs1;
+    vector<Point3f> tp_XYZs2;
 
-    detector->detect ( rgb1,keypoints_1 );
-    detector->detect ( rgb2,keypoints_2 );
+    // // using orb
+    // Ptr<FeatureDetector> detector = ORB::create();
+    // Ptr<DescriptorExtractor> descriptor = ORB::create();
 
-    descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
+    // detector->detect ( rgb1,keypoints_1 );
+    // detector->detect ( rgb2,keypoints_2 );
 
-    Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
-    vector<DMatch> match;
-    matcher->match ( descriptors_1, descriptors_2, match );
+    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
+    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
 
-    double min_dist=10000, max_dist=0;
+    // Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
+    // vector<DMatch> match;
+    // matcher->match ( descriptors_1, descriptors_2, match );
 
-    for ( int i = 0; i < descriptors_1.rows; i++ )
-    {
-        double dist = match[i].distance;
-        if ( dist < min_dist ) min_dist = dist;
-        if ( dist > max_dist ) max_dist = dist;
-    }
+    // double min_dist=10000, max_dist=0;
 
-    printf ( "-- Max dist : %f \n", max_dist );
-    printf ( "-- Min dist : %f \n", min_dist );
+    // for ( int i = 0; i < descriptors_1.rows; i++ )
+    // {
+    //     double dist = match[i].distance;
+    //     if ( dist < min_dist ) min_dist = dist;
+    //     if ( dist > max_dist ) max_dist = dist;
+    // }
 
+    // printf ( "-- Max dist : %f \n", max_dist );
+    // printf ( "-- Min dist : %f \n", min_dist );
+
+    // vector< DMatch > matches;
+    // for ( int i = 0; i < descriptors_1.rows; i++ )
+    // {
+    //     if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
+    //     {
+    //         matches.push_back ( match[i] );
+    //     }
+    // }
+
+        // int     nfeatures = 0,
+        // int     nOctaveLayers = 3,
+        // double  contrastThreshold = 0.04,
+        // double  edgeThreshold = 10,
+        // double  sigma = 1.6   
+
+
+// nfeatures   The number of best features to retain. The features are ranked by their scores (measured in SIFT algorithm as the local contrast)
+// nOctaveLayers   The number of layers in each octave. 3 is the value used in D. Lowe paper. The number of octaves is computed automatically from the image resolution.
+// contrastThreshold   The contrast threshold used to filter out weak features in semi-uniform (low-contrast) regions. The larger the threshold, the less features are produced by the detector.
+// edgeThreshold   The threshold used to filter out edge-like features. Note that the its meaning is different from the contrastThreshold, i.e. the larger the edgeThreshold, the less features are filtered out (more features are retained).
+// sigma   The sigma of the Gaussian applied to the input image at the octave #0. If your image is captured with a weak camera with soft lenses, you might want to reduce the number.
+
+    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(80,3,.08,20,.8);
+    f2d->detect ( rgb1,keypoints_1 );
+    f2d->detect ( rgb2,keypoints_2 );
+
+    f2d->compute ( rgb1, keypoints_1, descriptors_1 );
+    f2d->compute ( rgb2, keypoints_2, descriptors_2 );
+
+    BFMatcher matcher(NORM_L2);
     vector< DMatch > matches;
-    for ( int i = 0; i < descriptors_1.rows; i++ )
-    {
-        if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
-        {
-            matches.push_back ( match[i] );
-        }
-    }
+    matcher.match(descriptors_1,descriptors_2, matches);
+
+    nth_element(matches.begin(),matches.begin()+50,matches.end());
+    matches.erase(matches.begin()+50,matches.end());
 
     cv::Mat imgMatches;
-    cout <<"Find total "<<matches.size()<<" matches."<<endl;
-    cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
-    cv::imshow( "matches", imgMatches );
-    cv::waitKey( 0 );
 
+    vector< DMatch > valid3Dmatches;
     for ( DMatch m:matches )
     {
 
@@ -279,21 +302,67 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
             continue;
 
-        p_UVs1.push_back( p1 );
-		p_UVs2.push_back( p2 );
+        tp_UVs1.push_back( p1 );
+        tp_UVs2.push_back( p2 );
 
         cv::Point3f p_XYZ;
-		p_XYZ.x = depth1.at<double>(int(p1.x),int(p1.y),0);
-		p_XYZ.y = depth1.at<double>(int(p1.x),int(p1.y),1);
-		p_XYZ.z = depth1.at<double>(int(p1.x),int(p1.y),2);
-        p_XYZs1.push_back( p_XYZ );
-		p_XYZ.x = depth1.at<double>(int(p2.x),int(p2.y),0);
-		p_XYZ.y = depth1.at<double>(int(p2.x),int(p2.y),1);
-		p_XYZ.z = depth1.at<double>(int(p2.x),int(p2.y),2);
-		p_XYZs2.push_back( p_XYZ );
+        p_XYZ.x = depth1.at<double>(int(p1.x),int(p1.y),0);
+        p_XYZ.y = depth1.at<double>(int(p1.x),int(p1.y),1);
+        p_XYZ.z = depth1.at<double>(int(p1.x),int(p1.y),2);
+        tp_XYZs1.push_back( p_XYZ );
+        
+        p_XYZ.x = depth1.at<double>(int(p2.x),int(p2.y),0);
+        p_XYZ.y = depth1.at<double>(int(p2.x),int(p2.y),1);
+        p_XYZ.z = depth1.at<double>(int(p2.x),int(p2.y),2);
+        tp_XYZs2.push_back( p_XYZ );
+
+        valid3Dmatches.push_back(m);
 
     }
 
+    int no_RANSAC = 0;
+    if (no_RANSAC){
+        p_XYZs1 = tp_XYZs1;
+        p_XYZs2 = tp_XYZs2;
+        p_UVs1 = tp_UVs1;
+        p_UVs2 = tp_UVs2;
+        cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
+        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
+        cv::imshow( "matches", imgMatches );
+        cv::waitKey( 0 );
+    }
+    else{
+        double camera_matrix_data[3][3] = {
+            {C.fx, 0, C.cx},
+            {0, C.fy, C.cy},
+            {0, 0, 1}
+        };
+        cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
+        Mat rvec,tvec;
+        Mat inliers;
+        cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.95, inliers );
+        // cout <<"inliers: "<<inliers.rows<<endl;
+        // cout <<"R="<<rvec<<endl;
+        // cout <<"t="<<tvec<<endl;
+        vector< DMatch > RANSACmatches;
+        for ( int i=0;i<inliers.rows;i++)
+        {
+
+            p_UVs1.push_back( tp_UVs1[ inliers.ptr<int>(i)[0]  ] );
+            p_UVs2.push_back( tp_UVs2[ inliers.ptr<int>(i)[0]  ] );
+
+            p_XYZs1.push_back( tp_XYZs1[ inliers.ptr<int>(i)[0]  ] );
+            p_XYZs2.push_back( tp_XYZs2[ inliers.ptr<int>(i)[0]  ] );
+
+            RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]   );
+
+        }
+
+        cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
+        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
+        // cv::imshow( "RANSAC matches", imgMatches );
+        // cv::waitKey( 0 );
+    }
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
 }
@@ -343,7 +412,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 }
 
 double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T ){
-	cout << "T = "<<endl<<T<<endl;
+	// cout << "T = "<<endl<<T<<endl;
 	double rpE = 0;
         for (int i=0;i<p_XYZs1.size();i++){
             cv::Point3f pd1 = p_XYZs1[i];

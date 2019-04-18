@@ -73,10 +73,13 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
     
     int foundT = 0;
     int foundN = 0;
+    int maxN = 0;
     double inlierR = .1;
-    double errorThreshold = .5;
+    double errorThreshold = .4;
 
-    while (iterations < 400 && foundT==0) {
+    Mat Tfound;
+
+    while (iterations < 900 ) { //&& foundT==0
         foundN = 0; 
         std::srand ( unsigned ( std::time(0) ) );
         std::vector<int> myvector;
@@ -94,26 +97,35 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
         //     check2.push_back( p_XYZs2[myvector[i]]);
         // }
         Mat mat_r,vec_t;
-        cv::Mat T = cv::Mat::eye(4,4,CV_64F);
-        pose3d3d_SVD(test1,test2,mat_r,vec_t,&T );
+        cv::Mat Tfound = cv::Mat::eye(4,4,CV_64F);
+        pose3d3d_SVD(test1,test2,mat_r,vec_t,&Tfound );
+        // T = cv::Mat::eye(4,4,CV_64F);    only translation
+        // T.at<double>(0,3) = p_XYZs2[myvector[1]].x -p_XYZs1[myvector[1]].x;
+        // T.at<double>(1,3) = p_XYZs2[myvector[1]].y -p_XYZs1[myvector[1]].y;
+        // T.at<double>(2,3) = p_XYZs2[myvector[1]].z -p_XYZs1[myvector[1]].z;
 
         for (int i =3;i<N;i++){
             cv::Point3f pd1 = p_XYZs1[myvector[i]];
             cv::Point3f pd2 = p_XYZs2[myvector[i]];
 
             cv::Mat ptMat = (cv::Mat_<double>(4, 1) << pd1.x, pd1.y, pd1.z, 1);
-            cv::Mat dstMat = T*ptMat;
+            cv::Mat dstMat = Tfound*ptMat;
             cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
             // cout << "projPd1 "<<projPd1<<endl;
             if (norm(projPd1-pd2) < errorThreshold){
                 foundN++;
-                cout << " norm(projPd1-pd2)  "<< norm(projPd1-pd2)<<endl;
+                // cout << " norm(projPd1-pd2)  "<< norm(projPd1-pd2)<<endl;
             }
 
         }
+
         if ( foundN > inlierR* N){
             foundT =1;
-        }   
+        }  
+        if (foundN>maxN) {
+            maxN = foundN;
+            *T = Tfound;
+        }
         iterations++;
     }
     if (foundT == 0){
@@ -160,6 +172,18 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
     // cout<<"V="<<V<<endl;
 
     Eigen::Matrix3d R_ = U* ( V.transpose() );
+
+    double detX = R_.determinant();
+    
+    if (detX < -0.5){
+        // cout <<U<<endl;
+        U(2,0) = -U(2,0);
+        U(2,1) = -U(2,1);
+        U(2,2) = -U(2,2);
+        // cout <<U<<endl;
+        R_ = U* ( V.transpose() );
+    }
+
     Eigen::Vector3d t_ = Eigen::Vector3d ( p1.x, p1.y, p1.z ) - R_ * Eigen::Vector3d ( p2.x, p2.y, p2.z );
 
     // convert to cv::Mat
@@ -232,41 +256,41 @@ void pose_estimation::pose3d3d_BApose( vector<Point3f> & p_XYZs1, vector<Point3f
     }
 
 
-    Eigen::Isometry3d T_prior =  Eigen::Isometry3d::Identity();
-    Mat cvR = cv::Mat::eye(3,3,CV_64F);
-    Eigen::Matrix3d r_eigen;
-    for ( int i=0; i<3; i++ )
-        for ( int j=0; j<3; j++ ) 
-            r_eigen(i,j) = cvR.at<double>(i,j);
+    // Eigen::Isometry3d T_prior =  Eigen::Isometry3d::Identity();
+    // Mat cvR = cv::Mat::eye(3,3,CV_64F);
+    // Eigen::Matrix3d r_eigen;
+    // for ( int i=0; i<3; i++ )
+    //     for ( int j=0; j<3; j++ ) 
+    //         r_eigen(i,j) = cvR.at<double>(i,j);
 
-    Eigen::AngleAxisd angle(r_eigen);
-    T_prior = angle;
-    T_prior(0,3) = 0.0; 
-    T_prior(1,3) = 200000000; 
-    T_prior(2,3) = 0.0;
+    // Eigen::AngleAxisd angle(r_eigen);
+    // T_prior = angle;
+    // T_prior(0,3) = 0.0; 
+    // T_prior(1,3) = 200000000; 
+    // T_prior(2,3) = 0.0;
 
-    // cout << T_prior.matrix()<<endl;
+    // // cout << T_prior.matrix()<<endl;
 
-    g2o::EdgeSE3* edge_T = new g2o::EdgeSE3();
-    edge_T->setVertex( 0, dynamic_cast<g2o::VertexSE3Expmap*> (pose) );
-    edge_T->setMeasurement( T_prior );
+    // g2o::EdgeSE3* edge_T = new g2o::EdgeSE3();
+    // edge_T->setVertex( 0, dynamic_cast<g2o::VertexSE3Expmap*> (pose) );
+    // edge_T->setMeasurement( T_prior );
 
-    edge_T->vertices() [0] = optimizer.vertex( 1 );
-    edge_T->vertices() [1] = optimizer.vertex( 2 );
+    // edge_T->vertices() [0] = optimizer.vertex( 1 );
+    // edge_T->vertices() [1] = optimizer.vertex( 2 );
 
-    Eigen::Matrix<double, 6, 6> information_T = Eigen::Matrix< double, 6,6 >::Identity();
+    // Eigen::Matrix<double, 6, 6> information_T = Eigen::Matrix< double, 6,6 >::Identity();
 
-    information_T(0,0) = 100000000;
-    information_T(1,1) = 100000000;
-    information_T(2,2) = 100000000;
+    // information_T(0,0) = 100000000;
+    // information_T(1,1) = 100000000;
+    // information_T(2,2) = 100000000;
 
-    information_T(3,3) = 100000000;
-    information_T(4,4) = 100000000;
-    information_T(5,5) = 100000000;
+    // information_T(3,3) = 100000000;
+    // information_T(4,4) = 100000000;
+    // information_T(5,5) = 100000000;
 
-    edge_T->setInformation( information_T );
+    // edge_T->setInformation( information_T );
 
-    optimizer.addEdge(edge_T);
+    // optimizer.addEdge(edge_T);
 
 
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();

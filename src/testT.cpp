@@ -158,16 +158,39 @@ int main( int argc, char** argv )
     int TestSize = 100;
     for (int idx=1;idx<TestSize;idx++){
 
+        // if (idx<10){
+        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+        // }else{
+        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+        // }
+        
+        // if (idx<10){
+        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+        // }else{
+        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+        // }
+        // if (idx<10){
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_000"+to_string(idx)+".dat";
+        // }else{
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_00"+to_string(idx)+".dat";
+        // }
+        
+        // if (idx<10){
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y3/frm_000"+to_string(idx)+".dat";
+        // }else{
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y3/frm_00"+to_string(idx)+".dat";
+        // }
+
         if (idx<10){
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_000"+to_string(idx)+".dat";
         }else{
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_00"+to_string(idx)+".dat";
         }
         
         if (idx<10){
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_000"+to_string(idx)+".dat";
         }else{
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_00"+to_string(idx)+".dat";
         }
 
         cout << endl<<"load "<<firstF<<endl;
@@ -197,7 +220,7 @@ int main( int argc, char** argv )
         // myVO_SR4k.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
         // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
         // cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
-        myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+        
         
         // myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
         // myVO_SR4k.pose3d3d_BApose( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
@@ -206,20 +229,64 @@ int main( int argc, char** argv )
         // myVO_SR4k.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix_4k, &T);
         // myVO_SR4k.pose3d2d_BA( p_XYZs1, p_UVs2, mat_r, vec_t, T, cameraMatrix  );
  
-        rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-        cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // if (rpE>2*baseE){
-        //     cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // }
-        
-        myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
 
-        if (yaw <0){
-            yaw = -yaw;
-            pitch = -pitch;
-            roll = -roll;
-        } 
+        // double gt_data[4][4] = {
+        //     {1.0000,         0,         0,   0.00},
+        //     {0.0000,    0.9945,        -0.1045,   0.00},
+        //     {0.0000,   0.1045,    0.9945,    0.00},
+        //     {0,         0,         0,    1.0000}
+        // };
+        double gt_data[4][4] = {
+            {0.9945,         0,         0.1045,   0.00},
+            {0.0000,    1,        0,   0.00},
+            {-0.1045,   0,    0.9945,    0.00},
+            {0,         0,         0,    1.0000}
+        };
+
+        // double gt_data[4][4] = {
+        //     {1.0000,         0,         0,   0.00},
+        //     {0.0000,    1,        0,   0.20},
+        //     {0.0000,   0,    1,    0.00},
+        //     {0,         0,         0,    1.0000}
+        // };
+        cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+        double baseE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
+        cout << "groundTruth error " << 1000*baseE<< " mm"<<endl<<endl;
+
+        // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+        // cout << "pose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
+        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+        // // if (rpE>2*baseE){
+        // //     cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        // // }
+        
+        // myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
+        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+        // cout << "pose3d3d_BA error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
+        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+
+        // myVO_SR4k.pose3d3d_dirctSVD( p_XYZs1, p_XYZs2, T );
+        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T );
+        // cout << "pose3d3d_dirctSVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
+        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+
+
+        myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+        rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T );
+        cout << "RANSACpose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
         cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+
+        // if (yaw <0){
+        //     yaw = -yaw;
+        //     pitch = -pitch;
+        //     roll = -roll;
+        // } 
+        
 
 
     }

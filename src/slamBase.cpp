@@ -92,7 +92,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     }
 
-    I_gray = I_gray/4; //12bit
+    I_gray = I_gray/8; //12bit
     I_gray.convertTo(I_gray,CV_8U);
 
     // I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
@@ -347,12 +347,32 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
     int no_RANSAC = 1;
     if (no_RANSAC){
-        p_XYZs1 = tp_XYZs1;
-        p_XYZs2 = tp_XYZs2;
-        p_UVs1 = tp_UVs1;
-        p_UVs2 = tp_UVs2;
-        cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
-        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
+        // p_XYZs1 = tp_XYZs1;
+        // p_XYZs2 = tp_XYZs2;
+        // p_UVs1 = tp_UVs1;
+        // p_UVs2 = tp_UVs2;
+
+        vector< DMatch > distMatches;
+        for ( int i=0;i<tp_XYZs1.size();i++)
+        {
+            // cout << norm(tp_UVs1[i]-tp_UVs2[i]) << "  " << norm(tp_XYZs1[i]-tp_XYZs2[i])<<endl;
+            if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>.5)
+                continue;
+
+            p_UVs1.push_back( tp_UVs1[ i ] );
+            p_UVs2.push_back( tp_UVs2[ i ] );
+
+            p_XYZs1.push_back( tp_XYZs1[ i ] );
+            p_XYZs2.push_back( tp_XYZs2[ i ] );
+
+            distMatches.push_back(  valid3Dmatches[ i ]   );
+
+        }
+
+
+
+        cout <<"Find total "<<distMatches.size()<<" matches."<<endl;
+        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, distMatches, imgMatches );
         cv::imshow( "matches", imgMatches );
         cv::waitKey( 0 );
     }
@@ -438,7 +458,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 }
 
 double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T ){
-	cout << "T = "<<endl<<T<<endl;
+	// cout << "T = "<<endl<<T<<endl;
 	double rpE = 0;
         for (int i=0;i<p_XYZs1.size();i++){
             cv::Point3f pd1 = p_XYZs1[i];
@@ -449,6 +469,9 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
             cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
             // cout << "projPd1 "<<projPd1<<endl;
             rpE = rpE + norm(projPd1-pd2);
+            // if (norm(projPd1-pd2)>0.3){
+            //     cout <<"bad point warnning"<<endl;
+            // }
         }
         rpE = rpE/p_XYZs1.size();
 	return rpE;

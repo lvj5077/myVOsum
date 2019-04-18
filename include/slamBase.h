@@ -54,4 +54,5 @@ class slamBase{
 	    cv::Point3f point2dTo3d( cv::Point2f& point, double& d, CAMERA_INTRINSIC_PARAMETERS& camera );
 	    double reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t );
 	    double reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T );
+	    void rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw);
 };

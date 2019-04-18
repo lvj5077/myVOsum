@@ -46,7 +46,7 @@ TARGET_LINK_LIBRARIES( slamBase
 
 ADD_LIBRARY( myG2Oedge myG2Oedge.cpp )
 TARGET_LINK_LIBRARIES( myG2Oedge
-   g2o_core g2o_stuff g2o_types_sba g2o_csparse_extension 
+   g2o_core g2o_stuff g2o_types_sba g2o_csparse_extension g2o_solver_csparse g2o_types_slam3d
    ${CSparse_include_LIB} 
 )
 

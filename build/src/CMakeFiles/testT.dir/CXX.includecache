@@ -19,6 +19,10 @@ opencv2/calib3d/calib3d.hpp
 -
 opencv2/core/eigen.hpp
 -
+opencv2/imgproc/imgproc.hpp
+../include/opencv2/imgproc/imgproc.hpp
+opencv2/features2d/features2d.hpp
+-
 iostream
 -
 

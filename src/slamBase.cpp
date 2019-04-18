@@ -92,7 +92,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     }
 
-    I_gray = I_gray/16; //12bit
+    I_gray = I_gray/4; //12bit
     I_gray.convertTo(I_gray,CV_8U);
 
     // I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
@@ -117,39 +117,54 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 	vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
-    Ptr<FeatureDetector> detector = ORB::create();
-    Ptr<DescriptorExtractor> descriptor = ORB::create();
+    // Ptr<FeatureDetector> detector = ORB::create();
+    // Ptr<DescriptorExtractor> descriptor = ORB::create();
 
-    detector->detect ( rgb1,keypoints_1 );
-    detector->detect ( rgb2,keypoints_2 );
+    // detector->detect ( rgb1,keypoints_1 );
+    // detector->detect ( rgb2,keypoints_2 );
 
-    descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
+    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
+    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
 
-    Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
-    vector<DMatch> match;
-    matcher->match ( descriptors_1, descriptors_2, match );
+    // Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
+    // vector<DMatch> match;
+    // matcher->match ( descriptors_1, descriptors_2, match );
 
-    double min_dist=10000, max_dist=0;
+    // double min_dist=10000, max_dist=0;
 
-    for ( int i = 0; i < descriptors_1.rows; i++ )
-    {
-        double dist = match[i].distance;
-        if ( dist < min_dist ) min_dist = dist;
-        if ( dist > max_dist ) max_dist = dist;
-    }
+    // for ( int i = 0; i < descriptors_1.rows; i++ )
+    // {
+    //     double dist = match[i].distance;
+    //     if ( dist < min_dist ) min_dist = dist;
+    //     if ( dist > max_dist ) max_dist = dist;
+    // }
 
-    // printf ( "-- Max dist : %f \n", max_dist );
-    // printf ( "-- Min dist : %f \n", min_dist );
+    // // printf ( "-- Max dist : %f \n", max_dist );
+    // // printf ( "-- Min dist : %f \n", min_dist );
 
+    // vector< DMatch > matches;
+    // for ( int i = 0; i < descriptors_1.rows; i++ )
+    // {
+    //     if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
+    //     {
+    //         matches.push_back ( match[i] );
+    //     }
+    // }
+
+    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(80,3,.08,20,.8);
+    f2d->detect ( rgb1,keypoints_1 );
+    f2d->detect ( rgb2,keypoints_2 );
+
+    f2d->compute ( rgb1, keypoints_1, descriptors_1 );
+    f2d->compute ( rgb2, keypoints_2, descriptors_2 );
+
+    BFMatcher matcher(NORM_L2);
     vector< DMatch > matches;
-    for ( int i = 0; i < descriptors_1.rows; i++ )
-    {
-        if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
-        {
-            matches.push_back ( match[i] );
-        }
-    }
+    matcher.match(descriptors_1,descriptors_2, matches);
+
+    nth_element(matches.begin(),matches.begin()+50,matches.end());
+    matches.erase(matches.begin()+50,matches.end());
+
 
     cv::Mat imgMatches;
     // cout <<"Find total "<<matches.size()<<" matches."<<endl;
@@ -163,10 +178,15 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         cv::Point2f p1 = keypoints_1[m.queryIdx].pt;
         cv::Point2f p2 = keypoints_2[m.trainIdx].pt;
+
         double d1 = double(depth1.ptr<unsigned short> ( int ( p1.y ) ) [ int ( p1.x ) ])/C.scale;
         double d2 = double(depth2.ptr<unsigned short> ( int ( p2.y ) ) [ int ( p2.x ) ])/C.scale;
+
+        // d1 = 2;
+        // d2 = 2;
         if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
             continue;
+
 
         tp_UVs1.push_back( p1 );
 		tp_UVs2.push_back( p2 );
@@ -180,7 +200,6 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 		valid3Dmatches.push_back(m);
 
     }
-
 	double camera_matrix_data[3][3] = {
 	    {C.fx, 0, C.cx},
 	    {0, C.fy, C.cy},
@@ -189,10 +208,11 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
     Mat rvec,tvec;
     Mat inliers;
-    cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.99, inliers );
+    cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.95, inliers );
+
     // cout <<"inliers: "<<inliers.rows<<endl;
-    cout <<"R="<<rvec<<endl;
-    cout <<"t="<<tvec<<endl;
+    // cout <<"R="<<rvec<<endl;
+    // cout <<"t="<<tvec<<endl;
     vector< DMatch > RANSACmatches;
     for ( int i=0;i<inliers.rows;i++)
     {
@@ -209,7 +229,7 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
     cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
     cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
-    cv::imshow( "matches", imgMatches );
+    cv::imshow( "RANSAC inlier matches", imgMatches );
     cv::waitKey( 0 );
 
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
@@ -320,7 +340,12 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
     }
 
-    int no_RANSAC = 0;
+    // cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
+    // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
+    // cv::imshow( "matches", imgMatches );
+    // cv::waitKey( 0 );
+
+    int no_RANSAC = 1;
     if (no_RANSAC){
         p_XYZs1 = tp_XYZs1;
         p_XYZs2 = tp_XYZs2;
@@ -359,10 +384,11 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         }
 
         cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
-        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
-        // cv::imshow( "RANSAC matches", imgMatches );
-        // cv::waitKey( 0 );
+        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
+        cv::imshow( "RANSAC matches", imgMatches );
+        cv::waitKey( 0 );
     }
+    cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
 }
@@ -412,7 +438,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 }
 
 double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T ){
-	// cout << "T = "<<endl<<T<<endl;
+	cout << "T = "<<endl<<T<<endl;
 	double rpE = 0;
         for (int i=0;i<p_XYZs1.size();i++){
             cv::Point3f pd1 = p_XYZs1[i];
@@ -426,4 +452,11 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
         }
         rpE = rpE/p_XYZs1.size();
 	return rpE;
+}
+
+void slamBase::rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw){
+    float sy= sqrt(mat_r.at<double>(0,0) * mat_r.at<double>(0,0) +  mat_r.at<double>(1,0) * mat_r.at<double>(1,0) );
+    roll = atan2(mat_r.at<double>(2,1) , mat_r.at<double>(2,2));
+    pitch = atan2(-mat_r.at<double>(2,0), sy);
+    yaw = atan2(mat_r.at<double>(1,0), mat_r.at<double>(0,0));
 }

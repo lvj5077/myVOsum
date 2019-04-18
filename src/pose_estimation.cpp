@@ -10,6 +10,11 @@
 #include <Eigen/Geometry>
 #include <Eigen/SVD>
 
+#include <iostream>     // std::cout
+#include <algorithm>    // std::random_shuffle
+#include <vector>       // std::vector
+#include <ctime>        // std::time
+#include <cstdlib>      // std::rand, std::srand
 
 
 #include <chrono>
@@ -39,6 +44,86 @@ void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f
 	T = Tm;
 	// R= Tm(cv::Rect(0,0,3,3));
 	// tvecN = Tm(cv::Rect(3,0,1,3));
+
+}
+
+void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, Mat* T ){
+
+    // cv::Mat outM3by4G;// = cv::Mat::zeros(3,4,CV_64F);
+    // cv::Mat inliers3dG;
+    // cv::estimateAffine3D(p_XYZs2,p_XYZs1, outM3by4G, inliers3dG, 3, 0.999); 
+
+    // cout << outM3by4G<<endl;
+    // Mat Tm = cv::Mat::eye(4,4,CV_64F);
+    // mat_r = outM3by4G(cv::Rect(0,0,3,3));
+    // vec_t = outM3by4G(cv::Rect(3,0,1,3));
+    // mat_r.copyTo(Tm(cv::Rect(0, 0, 3, 3)));
+    // vec_t.copyTo(Tm(cv::Rect(3, 0, 1, 3)));  
+    // *T = Tm;
+
+    int iterations = 0;
+    int N = p_XYZs1.size();
+
+    // cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
+    // std::cout << "myvector contains:";
+    // for (int i=0; i<10; i++){
+    //     std::cout << ' ' << myvector[i];
+    // }
+    
+    
+    int foundT = 0;
+    int foundN = 0;
+    double inlierR = .1;
+    double errorThreshold = .5;
+
+    while (iterations < 400 && foundT==0) {
+        foundN = 0; 
+        std::srand ( unsigned ( std::time(0) ) );
+        std::vector<int> myvector;
+
+        for (int i=0; i<N; i++) myvector.push_back(i); 
+
+        std::random_shuffle ( myvector.begin(), myvector.end() );
+        vector<Point3f> test1,test2,check1,check2;
+        for (int i =0;i<3;i++){
+            test1.push_back( p_XYZs1[myvector[i]]);
+            test2.push_back( p_XYZs2[myvector[i]]);
+        }
+        // for (int i =3;i<N;i++){
+        //     check1.push_back( p_XYZs1[myvector[i]]);
+        //     check2.push_back( p_XYZs2[myvector[i]]);
+        // }
+        Mat mat_r,vec_t;
+        cv::Mat T = cv::Mat::eye(4,4,CV_64F);
+        pose3d3d_SVD(test1,test2,mat_r,vec_t,&T );
+
+        for (int i =3;i<N;i++){
+            cv::Point3f pd1 = p_XYZs1[myvector[i]];
+            cv::Point3f pd2 = p_XYZs2[myvector[i]];
+
+            cv::Mat ptMat = (cv::Mat_<double>(4, 1) << pd1.x, pd1.y, pd1.z, 1);
+            cv::Mat dstMat = T*ptMat;
+            cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
+            // cout << "projPd1 "<<projPd1<<endl;
+            if (norm(projPd1-pd2) < errorThreshold){
+                foundN++;
+                cout << " norm(projPd1-pd2)  "<< norm(projPd1-pd2)<<endl;
+            }
+
+        }
+        if ( foundN > inlierR* N){
+            foundT =1;
+        }   
+        iterations++;
+    }
+    if (foundT == 0){
+        cout <<"no found========================================="<<endl;
+        Mat Tm = cv::Mat::eye(4,4,CV_64F);
+        mat_r = Tm(cv::Rect(0,0,3,3));
+        vec_t = Tm(cv::Rect(3,0,1,3));
+        *T = Tm;
+    }
+    cout << "inlier " << foundN << " in "<< N <<endl;
 
 }
 
@@ -93,9 +178,7 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
     }
 }
 
-
-
-void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t, Mat & T ){
+void pose_estimation::pose3d3d_BApose( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t, Mat & T ){
     g2o::SparseOptimizer optimizer;
     typedef g2o::BlockSolver_6_3 SlamBlockSolver; 
     typedef g2o::LinearSolverEigen< SlamBlockSolver::PoseMatrixType > SlamLinearSolver; 
@@ -126,38 +209,152 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
 
     // edges
     int index = 1;
-    vector<EdgeProjectXYZRGBDPoseOnly*> edges;
+
     for ( size_t i=0; i<p_XYZs1.size(); i++ )
     {
         EdgeProjectXYZRGBDPoseOnly* edge = new EdgeProjectXYZRGBDPoseOnly(
             Eigen::Vector3d(p_XYZs2[i].x, p_XYZs2[i].y, p_XYZs2[i].z) );
-        edge->setId( index );
+        pose->setId( index );
         edge->setVertex( 0, dynamic_cast<g2o::VertexSE3Expmap*> (pose) );
         edge->setMeasurement( Eigen::Vector3d(
             p_XYZs1[i].x, p_XYZs1[i].y, p_XYZs1[i].z) );
 
         Eigen::Matrix3d information = Eigen::Matrix< double, 3,3 >::Identity();
-        // 信息矩阵是协方差矩阵的逆，表示我们对边的精度的预先估计
-        // 因为pose为6D的，信息矩阵是6*6的阵，假设位置和角度的估计精度均为0.1且互相独立
-        // 那么协方差则为对角为0.01的矩阵，信息阵则为100的矩阵
-        information(0,0) = 100;
-        information(1,1) = 10000;
-        information(2,2) = 100;
-        // information(3,3) = information(4,4) = information(5,5) = 100;
+
+        information(0,0) = 1;
+        information(1,1) = 1;
+        information(2,2) = 1;
 
         edge->setInformation( information );
 
         optimizer.addEdge(edge);
         index++;
-        edges.push_back(edge);
+    }
+
+
+    Eigen::Isometry3d T_prior =  Eigen::Isometry3d::Identity();
+    Mat cvR = cv::Mat::eye(3,3,CV_64F);
+    Eigen::Matrix3d r_eigen;
+    for ( int i=0; i<3; i++ )
+        for ( int j=0; j<3; j++ ) 
+            r_eigen(i,j) = cvR.at<double>(i,j);
+
+    Eigen::AngleAxisd angle(r_eigen);
+    T_prior = angle;
+    T_prior(0,3) = 0.0; 
+    T_prior(1,3) = 200000000; 
+    T_prior(2,3) = 0.0;
+
+    // cout << T_prior.matrix()<<endl;
+
+    g2o::EdgeSE3* edge_T = new g2o::EdgeSE3();
+    edge_T->setVertex( 0, dynamic_cast<g2o::VertexSE3Expmap*> (pose) );
+    edge_T->setMeasurement( T_prior );
+
+    edge_T->vertices() [0] = optimizer.vertex( 1 );
+    edge_T->vertices() [1] = optimizer.vertex( 2 );
+
+    Eigen::Matrix<double, 6, 6> information_T = Eigen::Matrix< double, 6,6 >::Identity();
+
+    information_T(0,0) = 100000000;
+    information_T(1,1) = 100000000;
+    information_T(2,2) = 100000000;
+
+    information_T(3,3) = 100000000;
+    information_T(4,4) = 100000000;
+    information_T(5,5) = 100000000;
+
+    edge_T->setInformation( information_T );
+
+    optimizer.addEdge(edge_T);
+
+
+    chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+    optimizer.setVerbose( false );
+    optimizer.initializeOptimization();
+    optimizer.save("result_before.g2o");
+    optimizer.optimize(10);
+    chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
+    chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2-t1);
+    // cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
+
+    // cout<<endl<<"after optimization:"<<endl;
+    cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
+
+    eigen2cv(Eigen::Isometry3d( pose->estimate() ).matrix(), T);
+
+}
+
+void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t, Mat & T ){
+    g2o::SparseOptimizer optimizer;
+    typedef g2o::BlockSolver_6_3 SlamBlockSolver; 
+    typedef g2o::LinearSolverEigen< SlamBlockSolver::PoseMatrixType > SlamLinearSolver; 
+    std::unique_ptr<SlamLinearSolver> linearSolver ( new SlamLinearSolver());
+    linearSolver->setBlockOrdering( false );
+    std::unique_ptr<SlamBlockSolver> blockSolver ( new SlamBlockSolver ( std::move(linearSolver)));
+    g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg( std::move(blockSolver) );
+    optimizer.setAlgorithm( solver );
+
+    // vertex
+    g2o::VertexSE3Expmap* pose = new g2o::VertexSE3Expmap(); // camera pose
+    Eigen::Matrix3d R_mat;
+    R_mat <<
+          mat_r.at<double> ( 0,0 ), mat_r.at<double> ( 0,1 ), mat_r.at<double> ( 0,2 ),
+          mat_r.at<double> ( 1,0 ), mat_r.at<double> ( 1,1 ), mat_r.at<double> ( 1,2 ),
+          mat_r.at<double> ( 2,0 ), mat_r.at<double> ( 2,1 ), mat_r.at<double> ( 2,2 );
+    Eigen::Vector3d t_vect;
+    t_vect << vec_t.at<double> ( 0,0 ), vec_t.at<double> ( 1,0 ), vec_t.at<double> ( 2,0 );
+
+    t_vect << 0, .2, 0;
+    R_mat = Eigen::Matrix3d::Identity();
+    // pose->setEstimate( g2o::SE3Quat(
+    //     Eigen::Matrix3d::Identity(),
+    //     Eigen::Vector3d( 0,0,0 )
+    // ) );
+    pose->setId ( 0 );
+    pose->setEstimate ( g2o::SE3Quat (
+                            R_mat,
+                            t_vect
+                        ) );
+    optimizer.addVertex ( pose );
+
+    // edges
+    int pointIndex = 1;                                     
+    for( auto &p: p_XYZs2 ){
+        auto point = new g2o::VertexSBAPointXYZ();
+        point->setId( pointIndex++ );
+        point->setMarginalized( true );                    
+        point->setEstimate( Eigen::Vector3d( p.x, p.y, p.z ) );
+        optimizer.addVertex( point );
+    }
+
+    // edges
+    int index = 0;
+    vector<EdgeProjectXYZRGBDPoseAndPts*> edges;
+    for ( size_t i=0; i<p_XYZs1.size(); i++ )
+    {
+        auto edge = new EdgeProjectXYZRGBDPoseAndPts( );      
+
+        edge->setId( index );
+        edge->setVertex( 0 , dynamic_cast< g2o::VertexSBAPointXYZ *> ( optimizer.vertex(index)) );
+        edge->setVertex( 1 , dynamic_cast< g2o::OptimizableGraph::Vertex *> ( optimizer.vertex(0) ) );
+
+        edge->setMeasurement( Eigen::Vector3d (
+                p_XYZs1[i].x, p_XYZs1[i].y, p_XYZs1[i].z)
+                            );
+        edge->setInformation( Eigen::Matrix3d::Identity()*1e4 );
+        optimizer.addEdge(edge);                           
+        index++;
+        edges.push_back(edge);                            
     }
 
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
     optimizer.setVerbose( false );
     optimizer.initializeOptimization();
-    optimizer.optimize(10);
+    optimizer.optimize(100);
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2-t1);
+
     // cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
 
     // cout<<endl<<"after optimization:"<<endl;

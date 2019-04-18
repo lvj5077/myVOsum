@@ -217,7 +217,7 @@ OPENGL_gl_LIBRARY:FILEPATH=/Applications/Xcode.app/Contents/Developer/Platforms/
 OPENGL_glu_LIBRARY:FILEPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework
 
 //Dependencies for the target
-myG2Oedge_LIB_DEPENDS:STATIC=general;g2o_core;general;g2o_stuff;general;g2o_types_sba;general;g2o_csparse_extension;general;/usr/local/Cellar/suite-sparse/5.3.0/lib/;
+myG2Oedge_LIB_DEPENDS:STATIC=general;g2o_core;general;g2o_stuff;general;g2o_types_sba;general;g2o_csparse_extension;general;g2o_solver_csparse;general;g2o_types_slam3d;general;/usr/local/Cellar/suite-sparse/5.3.0/lib/;
 
 //Value Computed by CMake
 myVOsum_BINARY_DIR:STATIC=/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src

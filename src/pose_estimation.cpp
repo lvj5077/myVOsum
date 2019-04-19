@@ -22,28 +22,28 @@
 void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat& T){
 
     int N = p_XYZs1.size();
-	cv::Mat firstM = cv::Mat::zeros(N,4,CV_64F);
-	cv::Mat secondM = cv::Mat::zeros(N,4,CV_64F);
-	for (int i=0;i<N;i++){
-	    firstM.at<double>(i,3) = 1.0;
-	    secondM.at<double>(i,3) = 1.0;
+    cv::Mat firstM = cv::Mat::zeros(N,4,CV_64F);
+    cv::Mat secondM = cv::Mat::zeros(N,4,CV_64F);
+    for (int i=0;i<N;i++){
+        firstM.at<double>(i,3) = 1.0;
+        secondM.at<double>(i,3) = 1.0;
 
-	    firstM.at<double>(i,0) = (p_XYZs1[i]).x;
-	    secondM.at<double>(i,0) = (p_XYZs2[i]).x;
+        firstM.at<double>(i,0) = (p_XYZs1[i]).x;
+        secondM.at<double>(i,0) = (p_XYZs2[i]).x;
 
-	    firstM.at<double>(i,1) = (p_XYZs1[i]).y;
-	    secondM.at<double>(i,1) = (p_XYZs2[i]).y;
+        firstM.at<double>(i,1) = (p_XYZs1[i]).y;
+        secondM.at<double>(i,1) = (p_XYZs2[i]).y;
 
-	    firstM.at<double>(i,2) = (p_XYZs1[i]).z;
-	    secondM.at<double>(i,2) = (p_XYZs2[i]).z;
-	}
-	cv::Mat Tm;
-	cv::solve(secondM,firstM,Tm,DECOMP_SVD);
-	cv::transpose(Tm,Tm);
-	// cout << "Tm"<<endl<<Tm<<endl;
-	T = Tm;
-	// R= Tm(cv::Rect(0,0,3,3));
-	// tvecN = Tm(cv::Rect(3,0,1,3));
+        firstM.at<double>(i,2) = (p_XYZs1[i]).z;
+        secondM.at<double>(i,2) = (p_XYZs2[i]).z;
+    }
+    cv::Mat Tm;
+    cv::solve(secondM,firstM,Tm,DECOMP_SVD);
+    cv::transpose(Tm,Tm);
+    // cout << "Tm"<<endl<<Tm<<endl;
+    T = Tm;
+    // R= Tm(cv::Rect(0,0,3,3));
+    // tvecN = Tm(cv::Rect(3,0,1,3));
 
 }
 
@@ -96,15 +96,15 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
         //     check1.push_back( p_XYZs1[myvector[i]]);
         //     check2.push_back( p_XYZs2[myvector[i]]);
         // }
-        Mat mat_r,vec_t;
+        Mat fmat_r,fvec_t;
         cv::Mat Tfound = cv::Mat::eye(4,4,CV_64F);
-        pose3d3d_SVD(test1,test2,mat_r,vec_t,&Tfound );
+        pose3d3d_SVD(test2,test1,fmat_r,fvec_t,&Tfound );
         // T = cv::Mat::eye(4,4,CV_64F);    only translation
         // T.at<double>(0,3) = p_XYZs2[myvector[1]].x -p_XYZs1[myvector[1]].x;
         // T.at<double>(1,3) = p_XYZs2[myvector[1]].y -p_XYZs1[myvector[1]].y;
         // T.at<double>(2,3) = p_XYZs2[myvector[1]].z -p_XYZs1[myvector[1]].z;
 
-        for (int i =3;i<N;i++){
+        for (int i =2;i<N;i++){
             cv::Point3f pd1 = p_XYZs1[myvector[i]];
             cv::Point3f pd2 = p_XYZs2[myvector[i]];
 
@@ -125,6 +125,8 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
         if (foundN>maxN) {
             maxN = foundN;
             *T = Tfound;
+            mat_r = Tfound(cv::Rect(0,0,3,3));
+            vec_t = Tfound(cv::Rect(3,0,1,3));
         }
         iterations++;
     }
@@ -223,7 +225,7 @@ void pose_estimation::pose3d3d_BApose( vector<Point3f> & p_XYZs1, vector<Point3f
 
     pose->setEstimate( g2o::SE3Quat(
         Eigen::Matrix3d::Identity(),
-        Eigen::Vector3d( 0,0.2,0 )
+        Eigen::Vector3d( 0,0,0 )
     ) );
     // pose->setEstimate ( g2o::SE3Quat (
     //                         R_mat,
@@ -303,7 +305,7 @@ void pose_estimation::pose3d3d_BApose( vector<Point3f> & p_XYZs1, vector<Point3f
     // cout<<"optimization costs time: "<<time_used.count()<<" seconds."<<endl;
 
     // cout<<endl<<"after optimization:"<<endl;
-    cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
+    // cout<<"T="<<endl<<Eigen::Isometry3d( pose->estimate() ).matrix()<<endl;
 
     eigen2cv(Eigen::Isometry3d( pose->estimate() ).matrix(), T);
 
@@ -329,7 +331,7 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
     Eigen::Vector3d t_vect;
     t_vect << vec_t.at<double> ( 0,0 ), vec_t.at<double> ( 1,0 ), vec_t.at<double> ( 2,0 );
 
-    t_vect << 0, .2, 0;
+    t_vect << 0, 0.0, 0;
     R_mat = Eigen::Matrix3d::Identity();
     // pose->setEstimate( g2o::SE3Quat(
     //     Eigen::Matrix3d::Identity(),
@@ -390,7 +392,7 @@ void pose_estimation::pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & 
 
 void pose_estimation::pose3d2d_PnP( vector<Point3f> & p_XYZs1, vector<Point2f> & p_UVs2, Mat & mat_r, Mat & vec_t,Mat &cameraMatrix, Mat* T ){
 
-	Mat vec_r;
+    Mat vec_r;
     solvePnP ( p_XYZs1, p_UVs2, cameraMatrix, Mat(), vec_r, vec_t, false ); 
     cv::Rodrigues ( vec_r, mat_r ); 
     if(T != NULL) {
@@ -491,7 +493,7 @@ void pose_estimation::pose2d2d_8pts( vector<Point2f> & p_UVs1, vector<Point2f> &
     // cout<<"fundamental_matrix is "<<endl<< fundamental_matrix<<endl;
     // F =K^−T E K^-1
 
-    Point2d principal_point ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 )  );	
+    Point2d principal_point ( cameraMatrix.at<double> ( 0,2 ), cameraMatrix.at<double> ( 1,2 )  );  
     double focal_length = ( cameraMatrix.at<double> ( 0,0 ) + cameraMatrix.at<double> ( 1,1 ) ) /2;
 
 

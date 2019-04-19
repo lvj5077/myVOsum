@@ -383,10 +383,10 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
 
 
-        cout <<"Find total "<<distMatches.size()<<" matches."<<endl;
-        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, distMatches, imgMatches );
-        cv::imshow( "matches", imgMatches );
-        cv::waitKey( 0 );
+        // cout <<"Find total "<<distMatches.size()<<" matches."<<endl;
+        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, distMatches, imgMatches );
+        // cv::imshow( "matches", imgMatches );
+        // cv::waitKey( 0 );
     }
     else{
         double camera_matrix_data[3][3] = {
@@ -415,10 +415,10 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         }
 
-        cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
-        cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
-        cv::imshow( "RANSAC matches", imgMatches );
-        cv::waitKey( 0 );
+        // cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
+        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
+        // cv::imshow( "RANSAC matches", imgMatches );
+        // cv::waitKey( 0 );
     }
     cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
@@ -495,4 +495,37 @@ void slamBase::rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw){
     roll = 180/3.14159265*atan2(mat_r.at<double>(2,1) , mat_r.at<double>(2,2));
     pitch = 180/3.14159265*atan2(-mat_r.at<double>(2,0), sy);
     yaw = 180/3.14159265*atan2(mat_r.at<double>(1,0), mat_r.at<double>(0,0));
+}
+
+
+
+// Calculates rotation matrix given euler angles.
+Mat slamBase::eulerAnglesToRotationMatrix(float roll,float pitch,float yaw)
+{
+    // Calculate rotation about x axis
+    Mat R_x = (Mat_<double>(3,3) <<
+               1,       0,              0,
+               0,       cos(roll),   -sin(roll),
+               0,       sin(roll),   cos(roll)
+               );
+     
+    // Calculate rotation about y axis
+    Mat R_y = (Mat_<double>(3,3) <<
+               cos(pitch),    0,      sin(pitch),
+               0,               1,      0,
+               -sin(pitch),   0,      cos(pitch)
+               );
+     
+    // Calculate rotation about z axis
+    Mat R_z = (Mat_<double>(3,3) <<
+               cos(yaw),    -sin(yaw),      0,
+               sin(yaw),    cos(yaw),       0,
+               0,               0,          1);
+     
+     
+    // Combined rotation matrix
+    Mat R = R_z * R_y * R_x;
+     
+    return R;
+ 
 }

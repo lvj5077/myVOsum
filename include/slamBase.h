@@ -55,4 +55,5 @@ class slamBase{
 	    double reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t );
 	    double reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T );
 	    void rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw);
+	    Mat eulerAnglesToRotationMatrix(float roll,float pitch,float yaw);
 };

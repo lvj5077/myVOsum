@@ -331,9 +331,9 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         p_XYZ.z = depth1.at<double>(int(p1.x),int(p1.y),2);
         tp_XYZs1.push_back( p_XYZ );
         
-        p_XYZ.x = depth1.at<double>(int(p2.x),int(p2.y),0);
-        p_XYZ.y = depth1.at<double>(int(p2.x),int(p2.y),1);
-        p_XYZ.z = depth1.at<double>(int(p2.x),int(p2.y),2);
+        p_XYZ.x = depth2.at<double>(int(p2.x),int(p2.y),0);
+        p_XYZ.y = depth2.at<double>(int(p2.x),int(p2.y),1);
+        p_XYZ.z = depth2.at<double>(int(p2.x),int(p2.y),2);
         tp_XYZs2.push_back( p_XYZ );
 
         valid3Dmatches.push_back(m);
@@ -363,30 +363,18 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
             p_UVs1.push_back( tp_UVs1[ i ] );
             p_UVs2.push_back( tp_UVs2[ i ] );
 
+
+            cv::Point3f p_XYZ;
+            p_XYZ.x = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),0);
+            p_XYZ.y = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),1);
+            p_XYZ.z = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),2);
+
             p_XYZs1.push_back( tp_XYZs1[ i ] );
 
-            // double gt_data[4][4] = {
-            //     {1.0000,         0,         0,   0.00},
-            //     {0.0000,    1.0000,         0,   0.00},
-            //     {0.0000,   0.0000,    1.0000,    0.00},
-            //     {0,         0,         0,    1.0000}
-            // };
-            // double gt_data[4][4] = {
-            //     {0.9945,         0,         0.1045,   0.00},
-            //     {0.0000,    1,        0,   0.00},
-            //     {-0.1045,   0,    0.9945,    0.00},
-            //     {0,         0,         0,    1.0000}
-            // };
-            // cv::Mat Tgt( 4, 4, CV_64F, gt_data );
 
-            // cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
-            // cv::Mat dstMat = Tgt*ptMat;
-            // cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
-            // // cout << p_XYZs1[ i ]<<endl;
-            // // cout << projPd1<<endl;
-            // // cout << "=============================="<<endl;
-            // p_XYZs2.push_back( projPd1 );
-
+            p_XYZ.x = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),0);
+            p_XYZ.y = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),1);
+            p_XYZ.z = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),2);
             p_XYZs2.push_back( tp_XYZs2[ i ] );
 
             distMatches.push_back(  valid3Dmatches[ i ]   );

@@ -169,15 +169,15 @@ int main( int argc, char** argv )
     for (int idx=1;idx<TestSize;idx++){
 
         if (idx<10){
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
         }else{
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
         }
         
         if (idx<10){
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
         }else{
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
         }
         // if (idx<10){
         //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_000"+to_string(idx)+".dat";
@@ -228,21 +228,21 @@ int main( int argc, char** argv )
         myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
         cout << "3d-3d =========================================" <<endl;
-        // for (int i =0;i<p_XYZs1.size();i++){
-        //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
-        // }
-        double gt_data[4][4] = {
-            {1.0000,         0,         0,   0.00},
-            {0.0000,    0.9945,        -0.1045,   0.00},
-            {0.0000,   0.1045,    0.9945,    0.00},
-            {0,         0,         0,    1.0000}
-        };  //yaw  
+        for (int i =0;i<p_XYZs1.size();i++){
+            cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<"    "<< p_UVs1[i]<<"  "<<p_UVs2[i] <<endl;
+        }
         // double gt_data[4][4] = {
-        //     {0.9945,         0,         0.1045,   0.00},
-        //     {0.0000,    1,        0,   0.00},
-        //     {-0.1045,   0,    0.9945,    0.00},
+        //     {1.0000,         0,         0,   0.00},
+        //     {0.0000,    0.9945,        -0.1045,   0.00},
+        //     {0.0000,   0.1045,    0.9945,    0.00},
         //     {0,         0,         0,    1.0000}
-        // };  // pitch
+        // };  //yaw  
+        double gt_data[4][4] = {
+            {0.9945,         0,         0.1045,   0.00},
+            {0.0000,    1,        0,   0.00},
+            {-0.1045,   0,    0.9945,    0.00},
+            {0,         0,         0,    1.0000}
+        };  // pitch
 
         // double gt_data[4][4] = {
         //     {0.9945,         -0.1045,         0.0,   0.00},
@@ -253,24 +253,25 @@ int main( int argc, char** argv )
 
         cv::Mat Tgt( 4, 4, CV_64F, gt_data );
 
-
-        p_XYZs2.clear();
-        for (int i =0;i<p_XYZs1.size();i++){
-            cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
-            cv::Mat dstMat = Tgt*ptMat;
-            cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
-            // cout << p_XYZs1[ i ]<<endl;
-            // cout << projPd1<<endl;
-            // cout << "=============================="<<endl;
-            p_XYZs2.push_back( projPd1 );
+        int myFakedata = 1;
+        if (myFakedata){
+            p_XYZs2.clear();
+            for (int i =0;i<p_XYZs1.size();i++){
+                cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
+                cv::Mat dstMat = Tgt*ptMat;
+                cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
+                // cout << p_XYZs1[ i ]<<endl;
+                // cout << projPd1<<endl;
+                // cout << "=============================="<<endl;
+                p_XYZs2.push_back( projPd1 );
+            }  
+            cout << "3d-3d" <<endl;
+            for (int i =0;i<p_XYZs1.size();i++){
+                cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
+            }
         }
 
 
-
-        // cout << "3d-3d" <<endl;
-        // for (int i =0;i<p_XYZs1.size();i++){
-        //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
-        // }
  
         cout << "======================================"<<endl;
 

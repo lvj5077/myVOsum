@@ -254,16 +254,16 @@ int main( int argc, char** argv )
         cv::Mat Tgt( 4, 4, CV_64F, gt_data );
 
 
-        // p_XYZs2.clear();
-        // for (int i =0;i<p_XYZs1.size();i++){
-        //     cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
-        //     cv::Mat dstMat = Tgt*ptMat;
-        //     cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
-        //     // cout << p_XYZs1[ i ]<<endl;
-        //     // cout << projPd1<<endl;
-        //     // cout << "=============================="<<endl;
-        //     p_XYZs2.push_back( projPd1 );
-        // }
+        p_XYZs2.clear();
+        for (int i =0;i<p_XYZs1.size();i++){
+            cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
+            cv::Mat dstMat = Tgt*ptMat;
+            cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
+            // cout << p_XYZs1[ i ]<<endl;
+            // cout << projPd1<<endl;
+            // cout << "=============================="<<endl;
+            p_XYZs2.push_back( projPd1 );
+        }
 
 
 

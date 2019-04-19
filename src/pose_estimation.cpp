@@ -38,7 +38,7 @@ void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f
 	    secondM.at<double>(i,2) = (p_XYZs2[i]).z;
 	}
 	cv::Mat Tm;
-	cv::solve(firstM,secondM,Tm,DECOMP_SVD);
+	cv::solve(secondM,firstM,Tm,DECOMP_SVD);
 	cv::transpose(Tm,Tm);
 	// cout << "Tm"<<endl<<Tm<<endl;
 	T = Tm;

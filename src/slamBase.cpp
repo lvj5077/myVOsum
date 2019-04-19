@@ -482,7 +482,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
 }
 
 double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T ){
-	cout << "T ==================================== "<<endl<<T<<endl;
+	// cout << "T ==================================== "<<endl<<T<<endl;
 	double rpE = 0;
         for (int i=0;i<p_XYZs1.size();i++){
             cv::Point3f pd1 = p_XYZs1[i];
@@ -491,7 +491,7 @@ double slamBase::reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> &
             cv::Mat ptMat = (cv::Mat_<double>(4, 1) << pd1.x, pd1.y, pd1.z, 1);
             cv::Mat dstMat = T*ptMat;
             cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
-            cout <<pd1<<" "<< pd2<< "  "<<projPd1<< "  "<< norm(projPd1-pd2)<< endl;
+            // cout <<pd1<<" "<< pd2<< "  "<<projPd1<< "  "<< norm(projPd1-pd2)<< endl;
 
             rpE = rpE + norm(projPd1-pd2);
             // if (norm(projPd1-pd2)>0.3){

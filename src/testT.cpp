@@ -66,109 +66,119 @@ int main( int argc, char** argv )
     Mat mat_r, vec_t;
     cv::Mat T = cv::Mat::eye(4,4,CV_64F);
     double rpE = 0;
-
-    pose_estimation myVO; 
-    slamBase myBase; 
-
-    myBase.setCamera(C_sr4k);
-
-
-	SR4kFRAME f1 = myBase.readSRFrame(firstF);
-	SR4kFRAME f2 = myBase.readSRFrame(secondF);
-	
-	// myBase.find4kMatches(f1.rgb,f2.rgb,f1.depthXYZ,f2.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
-    myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
-
-    CAMERA_INTRINSIC_PARAMETERS C = myBase.getCamera();
-	double camera_matrix_data[3][3] = {
-	    {C.fx, 0, C.cx},
-	    {0, C.fy, C.cy},
-	    {0, 0, 1}
-	};
-	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
-
-
     float roll,pitch,yaw;
     float sy;
+    CAMERA_INTRINSIC_PARAMETERS C;
+
+ //    pose_estimation myVO; 
+ //    slamBase myBase; 
+
+ //    myBase.setCamera(C_sr4k);
 
 
-    myVO.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
-    myBase.rotMtoRPY(T, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
-    cout << "reprojection error pose3d3d_dirctSVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+	// SR4kFRAME f1 = myBase.readSRFrame(firstF);
+	// SR4kFRAME f2 = myBase.readSRFrame(secondF);
+	
+	// // myBase.find4kMatches(f1.rgb,f2.rgb,f1.depthXYZ,f2.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-    myVO.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
-    myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << "reprojection error pose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+ //    myBase.findMatches(rgb1,rgb2,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-    myVO.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T);
-    myBase.rotMtoRPY(T, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T );
-    cout << "reprojection error RANSACpose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
+ //    C = myBase.getCamera();
+	// double camera_matrix_data[3][3] = {
+	//     {C.fx, 0, C.cx},
+	//     {0, C.fy, C.cy},
+	//     {0, 0, 1}
+	// };
+	// cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
+
+
+
+
+
+    // myVO.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
+    // myBase.rotMtoRPY(T, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
+    // cout << "reprojection error pose3d3d_dirctSVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
+    // myVO.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t );
+    // myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+    // cout << "reprojection error pose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
+    // myVO.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T);
+    // myBase.rotMtoRPY(T, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T );
+    // cout << "reprojection error RANSACpose3d3d_SVD" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
   
-    myVO.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
-    myBase.rotMtoRPY(T, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
-    cout << "reprojection error pose3d3d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+    // myVO.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
+    // myBase.rotMtoRPY(T, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
+    // cout << "reprojection error pose3d3d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
 
-    myVO.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix);
-    myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-    cout << "reprojection error pose3d2d_PnP" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+    // myVO.pose3d2d_PnP( p_XYZs1, p_UVs2, mat_r, vec_t, cameraMatrix);
+    // myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+    // cout << "reprojection error pose3d2d_PnP" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
-    myVO.pose3d2d_BA( p_XYZs1, p_UVs2, mat_r, vec_t, T, cameraMatrix  );
-    myBase.rotMtoRPY(T, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
-    cout << "reprojection error pose3d2d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+    // myVO.pose3d2d_BA( p_XYZs1, p_UVs2, mat_r, vec_t, T, cameraMatrix  );
+    // myBase.rotMtoRPY(T, roll, pitch, yaw);
+    // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+    // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, T);
+    // cout << "reprojection error pose3d2d_BA" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
     
-	double gt_data[4][4] = {
-	    {1.0000,         0,         0,   0.00},
-	    {0.0000,    1.0000,         0,   0.00},
-	    {0.0000,   0.0000,    1.0000,    0.00},
-	    {0,         0,         0,    1.0000}
-	};
-	cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+	// double gt_data[4][4] = {
+	//     {1.0000,         0,         0,   0.00},
+	//     {0.0000,    1.0000,         0,   0.00},
+	//     {0.0000,   0.0000,    1.0000,    0.00},
+	//     {0,         0,         0,    1.0000}
+	// };
 
-    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
-    cout << "reprojection error groundTruth" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+ //    double gt_data[4][4] = {
+ //        {0.9945,         0,         0.1045,   0.00},
+ //        {0.0000,    1,        0,   0.00},
+ //        {-0.1045,   0,    0.9945,    0.00},
+ //        {0,         0,         0,    1.0000}
+ //    };
+
+	// cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+
+ //    rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
+ //    cout << "reprojection error groundTruth" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
 
-    myVO.pose2d2d_8pts( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
+ //    myVO.pose2d2d_8pts( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
 
 
-    myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
-    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+ //    myBase.rotMtoRPY(mat_r, roll, pitch, yaw);
+ //    cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
 
     // rpE =  myBase.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
     // cout << "reprojection error pose3d2d_PnP" <<endl<< 1000*rpE<< " mm"<<endl<<endl;
     // myVO.pose2d2d_triangulation( p_UVs1, p_UVs2, mat_r, vec_t, cameraMatrix );
 
 
-    int TestSize = 100;
+    int TestSize = 2;
     for (int idx=1;idx<TestSize;idx++){
 
-        // if (idx<10){
-        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
-        // }else{
-        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
-        // }
+        if (idx<10){
+            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+        }else{
+            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+        }
         
-        // if (idx<10){
-        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
-        // }else{
-        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
-        // }
+        if (idx<10){
+            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+        }else{
+            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+        }
         // if (idx<10){
         //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_000"+to_string(idx)+".dat";
         // }else{
@@ -181,17 +191,17 @@ int main( int argc, char** argv )
         //     secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y3/frm_00"+to_string(idx)+".dat";
         // }
 
-        if (idx<10){
-            firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_000"+to_string(idx)+".dat";
-        }else{
-            firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_00"+to_string(idx)+".dat";
-        }
+        // if (idx<10){
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_000"+to_string(idx)+".dat";
+        // }else{
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_00"+to_string(idx)+".dat";
+        // }
         
-        if (idx<10){
-            secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_000"+to_string(idx)+".dat";
-        }else{
-            secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_00"+to_string(idx)+".dat";
-        }
+        // if (idx<10){
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_000"+to_string(idx)+".dat";
+        // }else{
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_00"+to_string(idx)+".dat";
+        // }
 
         cout << endl<<"load "<<firstF<<endl;
         cout << "load "<<secondF<<endl;
@@ -209,14 +219,61 @@ int main( int argc, char** argv )
         };
         cv::Mat cameraMatrix_4k( 3, 3, CV_64F, camera_matrix_data_4k );
 
-        SR4kFRAME f1_4k = myBase.readSRFrame(firstF);
-        SR4kFRAME f2_4k = myBase.readSRFrame(secondF);
+        SR4kFRAME f1_4k = myBase_SR4k.readSRFrame(firstF);
+        SR4kFRAME f2_4k = myBase_SR4k.readSRFrame(secondF);
         p_UVs1.clear();
         p_UVs2.clear();
         p_XYZs1.clear();
         p_XYZs2.clear();
         myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+        cout << "3d-3d =========================================" <<endl;
+        // for (int i =0;i<p_XYZs1.size();i++){
+        //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
+        // }
+        double gt_data[4][4] = {
+            {1.0000,         0,         0,   0.00},
+            {0.0000,    0.9945,        -0.1045,   0.00},
+            {0.0000,   0.1045,    0.9945,    0.00},
+            {0,         0,         0,    1.0000}
+        };  //yaw  
+        // double gt_data[4][4] = {
+        //     {0.9945,         0,         0.1045,   0.00},
+        //     {0.0000,    1,        0,   0.00},
+        //     {-0.1045,   0,    0.9945,    0.00},
+        //     {0,         0,         0,    1.0000}
+        // };  // pitch
+
+        // double gt_data[4][4] = {
+        //     {0.9945,         -0.1045,         0.0,   0.00},
+        //     {0.1045,    0.9945,        0,   0.00},
+        //     {0,   0,    1,    0.00},
+        //     {0,         0,         0,    1.0000}
+        // }; //roll
+
+        cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+
+
+        // p_XYZs2.clear();
+        // for (int i =0;i<p_XYZs1.size();i++){
+        //     cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
+        //     cv::Mat dstMat = Tgt*ptMat;
+        //     cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
+        //     // cout << p_XYZs1[ i ]<<endl;
+        //     // cout << projPd1<<endl;
+        //     // cout << "=============================="<<endl;
+        //     p_XYZs2.push_back( projPd1 );
+        // }
+
+
+
+        // cout << "3d-3d" <<endl;
+        // for (int i =0;i<p_XYZs1.size();i++){
+        //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
+        // }
  
+        cout << "======================================"<<endl;
+
         // myVO_SR4k.pose3d3d_dirctSVD(p_XYZs1, p_XYZs2, T);
         // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
         // cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
@@ -236,50 +293,49 @@ int main( int argc, char** argv )
         //     {0.0000,   0.1045,    0.9945,    0.00},
         //     {0,         0,         0,    1.0000}
         // };
-        double gt_data[4][4] = {
-            {0.9945,         0,         0.1045,   0.00},
-            {0.0000,    1,        0,   0.00},
-            {-0.1045,   0,    0.9945,    0.00},
-            {0,         0,         0,    1.0000}
-        };
-
         // double gt_data[4][4] = {
-        //     {1.0000,         0,         0,   0.00},
-        //     {0.0000,    1,        0,   0.20},
-        //     {0.0000,   0,    1,    0.00},
+        //     {0.9945,         0,         0.1045,   0.00},
+        //     {0.0000,    1,        0,   0.00},
+        //     {-0.1045,   0,    0.9945,    0.00},
         //     {0,         0,         0,    1.0000}
         // };
-        cv::Mat Tgt( 4, 4, CV_64F, gt_data );
+
+        myBase_SR4k.rotMtoRPY(Tgt, roll, pitch, yaw);
+        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
         double baseE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
         cout << "groundTruth error " << 1000*baseE<< " mm"<<endl<<endl;
 
-        // myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
-        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-        // cout << "pose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
-        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-        // // if (rpE>2*baseE){
-        // //     cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // // }
+        myVO_SR4k.pose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+        myBase_SR4k.rotMtoRPY(mat_r, roll, pitch, yaw);
+        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+        rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+        cout << "pose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
+        // if (rpE>2*baseE){
+        //     cout << "reprojection error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+        // }
         
-        // myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
-        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
-        // cout << "pose3d3d_BA error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
-        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
-
-        // myVO_SR4k.pose3d3d_dirctSVD( p_XYZs1, p_XYZs2, T );
-        // rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T );
-        // cout << "pose3d3d_dirctSVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        // myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
-        // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+        myVO_SR4k.pose3d3d_BA( p_XYZs1, p_XYZs2, mat_r, vec_t, T );
+        myBase_SR4k.rotMtoRPY(mat_r, roll, pitch, yaw);
+        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+        rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, mat_r, vec_t );
+        cout << "pose3d3d_BA error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
 
 
-        myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
+        myVO_SR4k.pose3d3d_dirctSVD( p_XYZs1, p_XYZs2, T );
+        myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
+        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl; 
+        rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T );
+        cout << "pose3d3d_dirctSVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+
+
+
+        myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs1, mat_r, vec_t, &T );
+        myBase_SR4k.rotMtoRPY(mat_r, roll, pitch, yaw);
+        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
         rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T );
         cout << "RANSACpose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
-        myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
-        cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+
 
         // if (yaw <0){
         //     yaw = -yaw;

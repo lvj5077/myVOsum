@@ -167,57 +167,19 @@ int main( int argc, char** argv )
 
         // myBase_SR4k.findMatches(f1_4k.rgb,f2_4k.rgb,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-        myBase_SR4k.find4kMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.depthXYZ,f1_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
         // myBase_SR4k.findMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
         // myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
         // myBase_SR4k.findMatches(rgb1,rgb2,depth1,depth2, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-        // for(int i = 0;i<5;i++){
-        //     for(int j =0;j<5;j++){
-        //         if (abs(double(depth2.ptr<unsigned short> ( j ) [ i ]) - double((f1_4k.z).ptr<unsigned short> ( j ) [ i ]))>2){
-        //         // if (abs(double(rgb1.ptr<int> ( j ) [ i ]) - double((f2_4k.rgb).ptr<int> ( j ) [ i ]))>1){    
-        //             cout << double(depth2.ptr<unsigned short> ( j ) [ i ]) << "~~~"<<(f1_4k.z).ptr<unsigned short> ( j ) [ i ]<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //         }
-        //     }
-        // }
-        // for(int i = 0;i<5;i++){
-        //     for(int j =0;j<5;j++){
-        //         if (abs(double(depth1.ptr<unsigned short> ( j ) [ i ]) - double((f2_4k.z).ptr<unsigned short> ( j ) [ i ]))>2){
-        //             cout << double(depth1.ptr<unsigned short> ( j ) [ i ]) << "~~~"<<(f2_4k.z).ptr<unsigned short> ( j ) [ i ]<<endl; 
-
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //         }
-        //     }
-        // }
-
-        // for(int i = 0;i<5;i++){
-        //     for(int j =0;j<5;j++){
-        //         if (abs(double(rgb1.ptr<uchar> ( j ) [ i ]) - double((f2_4k.rgb).ptr<uchar> ( j ) [ i ]))>2){
-        //             cout << double(rgb1.ptr<uchar> ( j ) [ i ]) << "~rgb~"<<double((f2_4k.rgb).ptr<uchar> ( j ) [ i ])<<endl; 
-
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
-        //         }
-        //     }
-        // }
-
         // cout << "3d-3d =========================================" <<endl;
         // for (int i =0;i<5;i++){
         //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<"    "<< p_UVs1[i]<<"  "<<p_UVs2[i] <<endl;
         // }
 
-        float myRoll = -6*3.1415926/180;
+        float myRoll = 6*3.1415926/180;
         float myPitch = 0*3.1415926/180;
         float myYaw = 0*3.1415926/180;
         Mat myR = myBase_SR4k.eulerAnglesToRotationMatrix(myRoll, myPitch, myYaw);

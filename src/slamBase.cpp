@@ -25,6 +25,8 @@ slamBase::slamBase(void)
 
 	C.depthL = 0.18;
 	C.depthH = 5.0;
+
+    C.exp = 50;
     // cout << "Object is being created" << endl;
 }
 
@@ -100,7 +102,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     }
 
-    I_gray = I_gray/8; //12bit
+    I_gray = I_gray/C.exp ; //12bit
     I_gray.convertTo(I_gray,CV_8U);
 
     // I_gray.convertTo(I_gray, CV_8U, 1.0 / 256, 0);
@@ -568,4 +570,20 @@ vector<Point3f> slamBase::imagToCVpt( Mat depth, CAMERA_INTRINSIC_PARAMETERS& ca
     }
 
     return pts_cv;
+}
+
+Eigen::Isometry3d  slamBase::cvTtoEigenT( Mat cv44T){
+    Eigen::Isometry3d T_eigen = Eigen::Isometry3d::Identity();
+
+    Eigen::Matrix3d r3v;
+
+    Mat mat_r = cv44T(cv::Rect(0,0,3,3));
+    cv::cv2eigen(mat_r, r3v);
+    Eigen::AngleAxisd angle(r3v);
+    T_eigen = angle;
+    T_eigen(0,3) = cv44T.at<double>(0,3); 
+    T_eigen(1,3) = cv44T.at<double>(1,3); 
+    T_eigen(2,3) = cv44T.at<double>(2,3);
+
+    return T_eigen;
 }

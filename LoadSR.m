@@ -1,7 +1,7 @@
 clear
 % clc
 % d = load('/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0080.dat');
-d= load('/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_0021.dat');
+d= load('/Users/lingqiujin/Data/RV_Data2/d1_0302.dat');
 z = d(1:144,:);
 x = d(1*144+1:2*144,:);
 y = d(2*144+1:3*144,:);
@@ -135,16 +135,16 @@ c_y = cy/k
 
 %%
 
-Files=dir('/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/*.dat');
+Files=dir('/Users/lingqiujin/Data/RV_Data2/*.dat');
 %     Files=dir([char(dir_name),'/color/*.jpg']);
 sumImage = zeros;
-for k=1:100
+for k=1:1100
     d = load([Files(k).folder '/' Files(k).name]);
-    c = uint8(d(3*144+1:4*144,:)/(8));
+    c = uint8(d(3*144+1:4*144,:)/(32));
 %     c = im2uint8(uint16(d(3*144+1:4*144,:)));
 %     c = imadjust(c);
 %     imshow(c)
-    ffname = ['/Users/lingqiujin/Data/RV_Data/Pitch/37/color/' int2str(k) '.png'];
+    ffname = ['/Users/lingqiujin/Data/RV_Data2/color/' int2str(k) '.png'];
 %     ffname(end-2:end)='png';
     imwrite(c, ffname)
     
@@ -157,5 +157,8 @@ end
 
 %%
     
-
-    
+pc1= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc1.pcd');
+pc2= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc2.pcd');
+pc= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc_12.pcd');
+pcshowpair(pc1,pc)
+figure,pcshowpair(pc2,pc)

@@ -137,6 +137,19 @@ pose_estimation/fast:
 .PHONY : pose_estimation/fast
 
 #=============================================================================
+# Target rules for targets named mySLAM
+
+# Build rule for target.
+mySLAM: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mySLAM
+.PHONY : mySLAM
+
+# fast build rule for target.
+mySLAM/fast:
+	$(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/build
+.PHONY : mySLAM/fast
+
+#=============================================================================
 # Target rules for targets named myG2Oedge
 
 # Build rule for target.
@@ -185,6 +198,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... testT"
 	@echo "... pose_estimation"
+	@echo "... mySLAM"
 	@echo "... myG2Oedge"
 	@echo "... slamBase"
 	@echo "... main"

@@ -427,6 +427,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/core/is_same.hpp
  /usr/local/include/boost/core/no_exceptions_support.hpp
  /usr/local/include/boost/core/noncopyable.hpp
+ /usr/local/include/boost/core/pointer_traits.hpp
  /usr/local/include/boost/core/ref.hpp
  /usr/local/include/boost/core/scoped_enum.hpp
  /usr/local/include/boost/core/swap.hpp
@@ -792,6 +793,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/fusion/mpl/push_front.hpp
  /usr/local/include/boost/fusion/mpl/size.hpp
  /usr/local/include/boost/fusion/sequence/convert.hpp
+ /usr/local/include/boost/fusion/sequence/intrinsic/at_key.hpp
  /usr/local/include/boost/fusion/sequence/intrinsic/begin.hpp
  /usr/local/include/boost/fusion/sequence/intrinsic/detail/segmented_begin.hpp
  /usr/local/include/boost/fusion/sequence/intrinsic/detail/segmented_begin_impl.hpp
@@ -867,6 +869,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/integer/common_factor_ct.hpp
  /usr/local/include/boost/integer/common_factor_rt.hpp
  /usr/local/include/boost/integer/integer_log2.hpp
+ /usr/local/include/boost/integer/integer_mask.hpp
  /usr/local/include/boost/integer/static_log2.hpp
  /usr/local/include/boost/integer_fwd.hpp
  /usr/local/include/boost/integer_traits.hpp
@@ -967,6 +970,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/lexical_cast/detail/widest_char.hpp
  /usr/local/include/boost/lexical_cast/try_lexical_convert.hpp
  /usr/local/include/boost/limits.hpp
+ /usr/local/include/boost/make_shared.hpp
  /usr/local/include/boost/math/policies/policy.hpp
  /usr/local/include/boost/math/special_functions/detail/fp_traits.hpp
  /usr/local/include/boost/math/special_functions/detail/round_fwd.hpp
@@ -1382,6 +1386,7 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/parameter/parameters.hpp
  /usr/local/include/boost/parameter/preprocessor.hpp
  /usr/local/include/boost/parameter/value_type.hpp
+ /usr/local/include/boost/pointer_to_other.hpp
  /usr/local/include/boost/predef.h
  /usr/local/include/boost/predef/architecture.h
  /usr/local/include/boost/predef/architecture/alpha.h
@@ -1652,6 +1657,73 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/preprocessor/tuple/to_list.hpp
  /usr/local/include/boost/preprocessor/variadic/elem.hpp
  /usr/local/include/boost/preprocessor/variadic/size.hpp
+ /usr/local/include/boost/random.hpp
+ /usr/local/include/boost/random/additive_combine.hpp
+ /usr/local/include/boost/random/bernoulli_distribution.hpp
+ /usr/local/include/boost/random/beta_distribution.hpp
+ /usr/local/include/boost/random/binomial_distribution.hpp
+ /usr/local/include/boost/random/cauchy_distribution.hpp
+ /usr/local/include/boost/random/chi_squared_distribution.hpp
+ /usr/local/include/boost/random/detail/config.hpp
+ /usr/local/include/boost/random/detail/const_mod.hpp
+ /usr/local/include/boost/random/detail/disable_warnings.hpp
+ /usr/local/include/boost/random/detail/enable_warnings.hpp
+ /usr/local/include/boost/random/detail/generator_bits.hpp
+ /usr/local/include/boost/random/detail/generator_seed_seq.hpp
+ /usr/local/include/boost/random/detail/int_float_pair.hpp
+ /usr/local/include/boost/random/detail/integer_log2.hpp
+ /usr/local/include/boost/random/detail/large_arithmetic.hpp
+ /usr/local/include/boost/random/detail/operators.hpp
+ /usr/local/include/boost/random/detail/polynomial.hpp
+ /usr/local/include/boost/random/detail/ptr_helper.hpp
+ /usr/local/include/boost/random/detail/seed.hpp
+ /usr/local/include/boost/random/detail/seed_impl.hpp
+ /usr/local/include/boost/random/detail/signed_unsigned_tools.hpp
+ /usr/local/include/boost/random/detail/uniform_int_float.hpp
+ /usr/local/include/boost/random/detail/vector_io.hpp
+ /usr/local/include/boost/random/discard_block.hpp
+ /usr/local/include/boost/random/discrete_distribution.hpp
+ /usr/local/include/boost/random/exponential_distribution.hpp
+ /usr/local/include/boost/random/extreme_value_distribution.hpp
+ /usr/local/include/boost/random/fisher_f_distribution.hpp
+ /usr/local/include/boost/random/gamma_distribution.hpp
+ /usr/local/include/boost/random/generate_canonical.hpp
+ /usr/local/include/boost/random/geometric_distribution.hpp
+ /usr/local/include/boost/random/hyperexponential_distribution.hpp
+ /usr/local/include/boost/random/independent_bits.hpp
+ /usr/local/include/boost/random/inversive_congruential.hpp
+ /usr/local/include/boost/random/lagged_fibonacci.hpp
+ /usr/local/include/boost/random/laplace_distribution.hpp
+ /usr/local/include/boost/random/linear_congruential.hpp
+ /usr/local/include/boost/random/linear_feedback_shift.hpp
+ /usr/local/include/boost/random/lognormal_distribution.hpp
+ /usr/local/include/boost/random/mersenne_twister.hpp
+ /usr/local/include/boost/random/negative_binomial_distribution.hpp
+ /usr/local/include/boost/random/non_central_chi_squared_distribution.hpp
+ /usr/local/include/boost/random/normal_distribution.hpp
+ /usr/local/include/boost/random/piecewise_constant_distribution.hpp
+ /usr/local/include/boost/random/piecewise_linear_distribution.hpp
+ /usr/local/include/boost/random/poisson_distribution.hpp
+ /usr/local/include/boost/random/random_number_generator.hpp
+ /usr/local/include/boost/random/ranlux.hpp
+ /usr/local/include/boost/random/seed_seq.hpp
+ /usr/local/include/boost/random/shuffle_order.hpp
+ /usr/local/include/boost/random/shuffle_output.hpp
+ /usr/local/include/boost/random/student_t_distribution.hpp
+ /usr/local/include/boost/random/subtract_with_carry.hpp
+ /usr/local/include/boost/random/taus88.hpp
+ /usr/local/include/boost/random/traits.hpp
+ /usr/local/include/boost/random/triangle_distribution.hpp
+ /usr/local/include/boost/random/uniform_01.hpp
+ /usr/local/include/boost/random/uniform_int.hpp
+ /usr/local/include/boost/random/uniform_int_distribution.hpp
+ /usr/local/include/boost/random/uniform_on_sphere.hpp
+ /usr/local/include/boost/random/uniform_real.hpp
+ /usr/local/include/boost/random/uniform_real_distribution.hpp
+ /usr/local/include/boost/random/uniform_smallint.hpp
+ /usr/local/include/boost/random/variate_generator.hpp
+ /usr/local/include/boost/random/weibull_distribution.hpp
+ /usr/local/include/boost/random/xor_combine.hpp
  /usr/local/include/boost/range/algorithm/equal.hpp
  /usr/local/include/boost/range/as_literal.hpp
  /usr/local/include/boost/range/begin.hpp
@@ -2098,6 +2170,12 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/boost/type_traits/same_traits.hpp
  /usr/local/include/boost/type_traits/type_identity.hpp
  /usr/local/include/boost/type_traits/type_with_alignment.hpp
+ /usr/local/include/boost/unordered/detail/fwd.hpp
+ /usr/local/include/boost/unordered/detail/implementation.hpp
+ /usr/local/include/boost/unordered/detail/map.hpp
+ /usr/local/include/boost/unordered/unordered_map.hpp
+ /usr/local/include/boost/unordered/unordered_map_fwd.hpp
+ /usr/local/include/boost/unordered_map.hpp
  /usr/local/include/boost/utility.hpp
  /usr/local/include/boost/utility/addressof.hpp
  /usr/local/include/boost/utility/base_from_member.hpp
@@ -2388,11 +2466,13 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/pcl-1.9/pcl/Vertices.h
  /usr/local/include/pcl-1.9/pcl/cloud_iterator.h
  /usr/local/include/pcl-1.9/pcl/common/centroid.h
+ /usr/local/include/pcl-1.9/pcl/common/common.h
  /usr/local/include/pcl-1.9/pcl/common/concatenate.h
  /usr/local/include/pcl-1.9/pcl/common/copy_point.h
  /usr/local/include/pcl-1.9/pcl/common/eigen.h
  /usr/local/include/pcl-1.9/pcl/common/impl/accumulators.hpp
  /usr/local/include/pcl-1.9/pcl/common/impl/centroid.hpp
+ /usr/local/include/pcl-1.9/pcl/common/impl/common.hpp
  /usr/local/include/pcl-1.9/pcl/common/impl/copy_point.hpp
  /usr/local/include/pcl-1.9/pcl/common/impl/eigen.hpp
  /usr/local/include/pcl-1.9/pcl/common/impl/io.hpp
@@ -2404,6 +2484,11 @@ src/CMakeFiles/slamBase.dir/slamBase.cpp.o
  /usr/local/include/pcl-1.9/pcl/conversions.h
  /usr/local/include/pcl-1.9/pcl/correspondence.h
  /usr/local/include/pcl-1.9/pcl/exceptions.h
+ /usr/local/include/pcl-1.9/pcl/filters/boost.h
+ /usr/local/include/pcl-1.9/pcl/filters/filter.h
+ /usr/local/include/pcl-1.9/pcl/filters/impl/filter.hpp
+ /usr/local/include/pcl-1.9/pcl/filters/impl/voxel_grid.hpp
+ /usr/local/include/pcl-1.9/pcl/filters/voxel_grid.h
  /usr/local/include/pcl-1.9/pcl/for_each_type.h
  /usr/local/include/pcl-1.9/pcl/impl/cloud_iterator.hpp
  /usr/local/include/pcl-1.9/pcl/impl/pcl_base.hpp

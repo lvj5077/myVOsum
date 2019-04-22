@@ -15,7 +15,7 @@ int main( int argc, char** argv )
 {
 
 
-	double depthL = 0.005;
+	double depthL = 0.8;
 	double depthH = 8.000;
 
 	// CAMERA_INTRINSIC_PARAMETERS C;
@@ -41,6 +41,7 @@ int main( int argc, char** argv )
     C_sr4k.depthH = 7.000;
     C_sr4k.height = 144;
     C_sr4k.width = 176;
+    C_sr4k.exp = 8;
 
 
     // string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
@@ -246,6 +247,7 @@ int main( int argc, char** argv )
         PointCloud<pcl::PointXYZ> pc1;
         PointCloud<pcl::PointXYZ> pc2;
         PointCloud<pcl::PointXYZ> pc_12;
+        PointCloud<pcl::PointXYZ> pc_21;
         vector<Point3f> pts1;
         vector<Point3f> pts2;
         switch(method) {
@@ -313,19 +315,12 @@ int main( int argc, char** argv )
         pcl::io::savePCDFile( "./pc1.pcd", pc1 );
         pcl::io::savePCDFile( "./pc2.pcd", pc2 );
 
-        Eigen::Isometry3d T_eigen = Eigen::Isometry3d::Identity();
-        Eigen::Matrix3d r3;
-        cv::cv2eigen(mat_r, r3);
-        Eigen::AngleAxisd angle(r3);
-        T_eigen = angle;
-        T_eigen(0,3) = vec_t.at<double>(0,0); 
-        T_eigen(1,3) = vec_t.at<double>(1,0); 
-        T_eigen(2,3) = vec_t.at<double>(2,0);
-        cout << T <<endl;
-        cout << T_eigen.matrix()<<endl;
+        Eigen::Isometry3d T_eigen = myBase_SR4k.cvTtoEigenT(T);
         pcl::transformPointCloud( pc1, pc_12, T_eigen.matrix() );
         pc_12 = pc_12+pc2;
         pcl::io::savePCDFile( "./pc_12.pcd", pc_12 );
+
+
         // pcl::visualization::CloudViewer viewer( "viewer" );
         // viewer.showCloud( pc_12 );
         // while( !viewer.wasStopped() )

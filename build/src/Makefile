@@ -141,6 +141,21 @@ pose_estimation/fast:
 .PHONY : pose_estimation/fast
 
 # Convenience name for target.
+src/CMakeFiles/mySLAM.dir/rule:
+	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/mySLAM.dir/rule
+.PHONY : src/CMakeFiles/mySLAM.dir/rule
+
+# Convenience name for target.
+mySLAM: src/CMakeFiles/mySLAM.dir/rule
+
+.PHONY : mySLAM
+
+# fast build rule for target.
+mySLAM/fast:
+	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/build
+.PHONY : mySLAM/fast
+
+# Convenience name for target.
 src/CMakeFiles/myG2Oedge.dir/rule:
 	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/myG2Oedge.dir/rule
 .PHONY : src/CMakeFiles/myG2Oedge.dir/rule
@@ -239,6 +254,33 @@ myG2Oedge.cpp.s:
 	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.s
 .PHONY : myG2Oedge.cpp.s
 
+mySLAM.o: mySLAM.cpp.o
+
+.PHONY : mySLAM.o
+
+# target to build an object file
+mySLAM.cpp.o:
+	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.o
+.PHONY : mySLAM.cpp.o
+
+mySLAM.i: mySLAM.cpp.i
+
+.PHONY : mySLAM.i
+
+# target to preprocess a source file
+mySLAM.cpp.i:
+	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.i
+.PHONY : mySLAM.cpp.i
+
+mySLAM.s: mySLAM.cpp.s
+
+.PHONY : mySLAM.s
+
+# target to generate assembly for a file
+mySLAM.cpp.s:
+	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.s
+.PHONY : mySLAM.cpp.s
+
 pose_estimation.o: pose_estimation.cpp.o
 
 .PHONY : pose_estimation.o
@@ -329,6 +371,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... testT"
 	@echo "... pose_estimation"
+	@echo "... mySLAM"
 	@echo "... myG2Oedge"
 	@echo "... edit_cache"
 	@echo "... slamBase"
@@ -339,6 +382,9 @@ help:
 	@echo "... myG2Oedge.o"
 	@echo "... myG2Oedge.i"
 	@echo "... myG2Oedge.s"
+	@echo "... mySLAM.o"
+	@echo "... mySLAM.i"
+	@echo "... mySLAM.s"
 	@echo "... pose_estimation.o"
 	@echo "... pose_estimation.i"
 	@echo "... pose_estimation.s"

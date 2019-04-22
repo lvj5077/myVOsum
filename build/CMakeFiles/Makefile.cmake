@@ -240,6 +240,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "src/CMakeFiles/testT.dir/DependInfo.cmake"
   "src/CMakeFiles/pose_estimation.dir/DependInfo.cmake"
+  "src/CMakeFiles/mySLAM.dir/DependInfo.cmake"
   "src/CMakeFiles/myG2Oedge.dir/DependInfo.cmake"
   "src/CMakeFiles/slamBase.dir/DependInfo.cmake"
   "src/CMakeFiles/main.dir/DependInfo.cmake"

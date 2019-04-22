@@ -70,6 +70,7 @@ CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
 # Convenience name for "all" pass in the directory.
 src/all: src/CMakeFiles/testT.dir/all
 src/all: src/CMakeFiles/pose_estimation.dir/all
+src/all: src/CMakeFiles/mySLAM.dir/all
 src/all: src/CMakeFiles/myG2Oedge.dir/all
 src/all: src/CMakeFiles/slamBase.dir/all
 src/all: src/CMakeFiles/main.dir/all
@@ -79,6 +80,7 @@ src/all: src/CMakeFiles/main.dir/all
 # Convenience name for "clean" pass in the directory.
 src/clean: src/CMakeFiles/testT.dir/clean
 src/clean: src/CMakeFiles/pose_estimation.dir/clean
+src/clean: src/CMakeFiles/mySLAM.dir/clean
 src/clean: src/CMakeFiles/myG2Oedge.dir/clean
 src/clean: src/CMakeFiles/slamBase.dir/clean
 src/clean: src/CMakeFiles/main.dir/clean
@@ -99,7 +101,7 @@ src/CMakeFiles/testT.dir/all: src/CMakeFiles/myG2Oedge.dir/all
 src/CMakeFiles/testT.dir/all: src/CMakeFiles/slamBase.dir/all
 	$(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/depend
 	$(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=9,10 "Built target testT"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=11,12 "Built target testT"
 .PHONY : src/CMakeFiles/testT.dir/all
 
 # Include target in all.
@@ -136,7 +138,7 @@ clean: src/CMakeFiles/testT.dir/clean
 src/CMakeFiles/pose_estimation.dir/all: src/CMakeFiles/myG2Oedge.dir/all
 	$(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/depend
 	$(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=5,6 "Built target pose_estimation"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=7,8 "Built target pose_estimation"
 .PHONY : src/CMakeFiles/pose_estimation.dir/all
 
 # Include target in all.
@@ -163,6 +165,45 @@ src/CMakeFiles/pose_estimation.dir/clean:
 
 # clean rule for target.
 clean: src/CMakeFiles/pose_estimation.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target src/CMakeFiles/mySLAM.dir
+
+# All Build rule for target.
+src/CMakeFiles/mySLAM.dir/all: src/CMakeFiles/pose_estimation.dir/all
+src/CMakeFiles/mySLAM.dir/all: src/CMakeFiles/myG2Oedge.dir/all
+src/CMakeFiles/mySLAM.dir/all: src/CMakeFiles/slamBase.dir/all
+	$(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/depend
+	$(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=5,6 "Built target mySLAM"
+.PHONY : src/CMakeFiles/mySLAM.dir/all
+
+# Include target in all.
+all: src/CMakeFiles/mySLAM.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+src/CMakeFiles/mySLAM.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 8
+	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/mySLAM.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
+.PHONY : src/CMakeFiles/mySLAM.dir/rule
+
+# Convenience name for target.
+mySLAM: src/CMakeFiles/mySLAM.dir/rule
+
+.PHONY : mySLAM
+
+# clean rule for target.
+src/CMakeFiles/mySLAM.dir/clean:
+	$(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/clean
+.PHONY : src/CMakeFiles/mySLAM.dir/clean
+
+# clean rule for target.
+clean: src/CMakeFiles/mySLAM.dir/clean
 
 .PHONY : clean
 
@@ -210,7 +251,7 @@ clean: src/CMakeFiles/myG2Oedge.dir/clean
 src/CMakeFiles/slamBase.dir/all:
 	$(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/depend
 	$(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=7,8 "Built target slamBase"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=9,10 "Built target slamBase"
 .PHONY : src/CMakeFiles/slamBase.dir/all
 
 # Include target in all.

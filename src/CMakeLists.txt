@@ -66,6 +66,13 @@ TARGET_LINK_LIBRARIES( testT
 	${PCL_LIBRARIES}
 )
 
+ADD_EXECUTABLE( mySLAM mySLAM.cpp )
+TARGET_LINK_LIBRARIES( mySLAM
+   slamBase
+   pose_estimation
+   ${OpenCV_LIBS}
+   ${PCL_LIBRARIES}
+)
 
 # add_executable( feature_extraction feature_extraction.cpp  )
 # target_link_libraries( feature_extraction ${OpenCV_LIBS} )

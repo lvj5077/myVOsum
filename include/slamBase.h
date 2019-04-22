@@ -15,6 +15,7 @@
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/transforms.h>
+#include <pcl/filters/voxel_grid.h>
 // #include <pcl/visualization/cloud_viewer.h>
 
 
@@ -28,7 +29,7 @@ using namespace pcl;
 
 struct CAMERA_INTRINSIC_PARAMETERS 
 { 
-    double cx, cy, fx, fy, scale, depthL, depthH,height,width;
+    double cx, cy, fx, fy, scale, depthL, depthH,height,width,exp;
 };
 
 struct SR4kFRAME
@@ -65,4 +66,5 @@ class slamBase{
 
 	    pcl::PointCloud<pcl::PointXYZ> cvPtsToPCL(vector<Point3f> &p_XYZs);
 	    vector<Point3f> imagToCVpt( Mat depth, CAMERA_INTRINSIC_PARAMETERS& camera );
+	    Eigen::Isometry3d cvTtoEigenT( Mat cv44T);
 };

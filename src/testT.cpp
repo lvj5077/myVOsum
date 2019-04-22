@@ -152,7 +152,7 @@ int main( int argc, char** argv )
         p_UVs2.clear();
         p_XYZs1.clear();
         p_XYZs2.clear();
-        // myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        
 
         string rgb1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/color/"+to_string(idx)+".png";
         string rgb2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/color/"+to_string(idx)+".png";
@@ -166,8 +166,12 @@ int main( int argc, char** argv )
         depth2 = imread ( depth2_str, CV_LOAD_IMAGE_UNCHANGED );
 
         // myBase_SR4k.findMatches(f1_4k.rgb,f2_4k.rgb,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+        myBase_SR4k.find4kMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.depthXYZ,f1_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
         // myBase_SR4k.findMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-        myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+        // myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
         // myBase_SR4k.findMatches(rgb1,rgb2,depth1,depth2, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
         // for(int i = 0;i<5;i++){
@@ -198,7 +202,7 @@ int main( int argc, char** argv )
         // for(int i = 0;i<5;i++){
         //     for(int j =0;j<5;j++){
         //         if (abs(double(rgb1.ptr<uchar> ( j ) [ i ]) - double((f2_4k.rgb).ptr<uchar> ( j ) [ i ]))>2){
-        //             cout << double(rgb1.ptr<uchar> ( j ) [ i ]) << "~~~"<<double((f2_4k.rgb).ptr<uchar> ( j ) [ i ])<<endl; 
+        //             cout << double(rgb1.ptr<uchar> ( j ) [ i ]) << "~rgb~"<<double((f2_4k.rgb).ptr<uchar> ( j ) [ i ])<<endl; 
 
         //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
         //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
@@ -209,7 +213,7 @@ int main( int argc, char** argv )
         // }
 
         // cout << "3d-3d =========================================" <<endl;
-        // for (int i =0;i<p_XYZs1.size();i++){
+        // for (int i =0;i<5;i++){
         //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<"    "<< p_UVs1[i]<<"  "<<p_UVs2[i] <<endl;
         // }
 

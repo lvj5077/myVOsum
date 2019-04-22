@@ -57,7 +57,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     int lineIdx = 0;
 
-
+    double temp = 0;
     while (getline(inFile, str))
     {
         lineIdx ++;
@@ -74,16 +74,16 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
         {
             for (int i = 0; i < width; i++)
             {
-                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) ;
-                I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) = -I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) ;
+                inFile >> temp ;
+                I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,0) = -1* temp ;
             }
         }
         if (lineIdx > (height+1)*2 && lineIdx<(height+1)*3)
         {
             for (int i = 0; i < width; i++)
             {
-                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0);
-                I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0) = -I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0);
+                inFile >> temp;
+                I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,1) = -1* temp;
             }
         }
 
@@ -116,8 +116,9 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
     I_z.convertTo(I_z,CV_16U);
     f.z= I_z.clone();
 
-    
-
+    // for (int i =0;i<5;i++){
+    //     cout << I_z.at<unsigned short>(2,i) <<"  "<<I_depth.at<double>(2,i,2) <<endl;
+    // }
 
     return f;
 }
@@ -221,6 +222,7 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         dupy2 = int(p2.y);
 
 
+
         cv::Point3f p_XYZ1,p_XYZ2;
         p_XYZ1 = point2dTo3d(p1,d1,C);
         p_XYZ2 = point2dTo3d(p2,d2,C);
@@ -234,7 +236,6 @@ void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         p_XYZs1.push_back( p_XYZ1 );
         p_XYZs2.push_back( p_XYZ2 );
-
 
         valid3Dmatches.push_back(m);
 
@@ -342,8 +343,9 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         cv::Point2f p1 = keypoints_1[m.trainIdx].pt;
         cv::Point2f p2 = keypoints_2[m.queryIdx].pt;
-        double d1 = depth1.at<double>(int(p1.x),int(p1.y),0);
-        double d2 = depth2.at<double>(int(p2.x),int(p2.y),0);
+        double d1 = depth1.at<double>(int(p1.y),int(p1.x),2);
+        double d2 = depth2.at<double>(int(p2.y),int(p2.x),2);
+
         // if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
         if ( d1 == 0 || d2 == 0 || d1>9 || d2>9) 
             continue;
@@ -359,16 +361,16 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         tp_UVs1.push_back( p1 );
         tp_UVs2.push_back( p2 );
 
-        cv::Point3f p_XYZ;
-        p_XYZ.x = depth1.at<double>(int(p1.x),int(p1.y),0);
-        p_XYZ.y = depth1.at<double>(int(p1.x),int(p1.y),1);
-        p_XYZ.z = depth1.at<double>(int(p1.x),int(p1.y),2);
-        tp_XYZs1.push_back( p_XYZ );
+        // cv::Point3f p_XYZ;
+        // p_XYZ.x = depth1.at<double>(int(p1.y),int(p1.x),0);
+        // p_XYZ.y = depth1.at<double>(int(p1.y),int(p1.x),1);
+        // p_XYZ.z = depth1.at<double>(int(p1.y),int(p1.x),2);
+        // tp_XYZs1.push_back( p_XYZ );
         
-        p_XYZ.x = depth2.at<double>(int(p2.x),int(p2.y),0);
-        p_XYZ.y = depth2.at<double>(int(p2.x),int(p2.y),1);
-        p_XYZ.z = depth2.at<double>(int(p2.x),int(p2.y),2);
-        tp_XYZs2.push_back( p_XYZ );
+        // p_XYZ.x = depth2.at<double>(int(p2.y),int(p2.x),0);
+        // p_XYZ.y = depth2.at<double>(int(p2.y),int(p2.x),1);
+        // p_XYZ.z = depth2.at<double>(int(p2.y),int(p2.x),2);
+        // tp_XYZs2.push_back( p_XYZ );
 
         valid3Dmatches.push_back(m);
 
@@ -379,84 +381,44 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
     // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1,  valid3Dmatches, imgMatches );
     // cv::imshow( "valid3Dmatches", imgMatches );
     // cv::waitKey( 0 );
+    p_XYZs1.clear();
+    p_XYZs2.clear();
 
-    int no_RANSAC = 1;
-    if (no_RANSAC){
-        p_XYZs1.clear();
-        p_XYZs2.clear();
+    // p_XYZs1 = tp_XYZs1;
+    // p_XYZs2 = tp_XYZs2;
+    // p_UVs1 = tp_UVs1;
+    // p_UVs2 = tp_UVs2;
 
-        // p_XYZs1 = tp_XYZs1;
-        // p_XYZs2 = tp_XYZs2;
-        // p_UVs1 = tp_UVs1;
-        // p_UVs2 = tp_UVs2;
+    vector< DMatch > distMatches;
+    for ( int i=0;i<tp_UVs1.size();i++)
+    {
+        // cout << norm(tp_UVs1[i]-tp_UVs2[i]) << "  " << norm(tp_XYZs1[i]-tp_XYZs2[i])<<endl;
+        // if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
+        cv::Point3f p_XYZ1;
+        p_XYZ1.x = depth1.at<double>(int(tp_UVs1[ i ].y),int(tp_UVs1[ i ].x),0);
+        p_XYZ1.y = depth1.at<double>(int(tp_UVs1[ i ].y),int(tp_UVs1[ i ].x),1);
+        p_XYZ1.z = depth1.at<double>(int(tp_UVs1[ i ].y),int(tp_UVs1[ i ].x),2);
 
-        vector< DMatch > distMatches;
-        for ( int i=0;i<tp_XYZs1.size();i++)
-        {
-            // cout << norm(tp_UVs1[i]-tp_UVs2[i]) << "  " << norm(tp_XYZs1[i]-tp_XYZs2[i])<<endl;
-            // if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
-            if ( norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
-                continue;
+        cv::Point3f p_XYZ2;
+        p_XYZ2.x = depth2.at<double>(int(tp_UVs2[ i ].y),int(tp_UVs2[ i ].x),0);
+        p_XYZ2.y = depth2.at<double>(int(tp_UVs2[ i ].y),int(tp_UVs2[ i ].x),1);
+        p_XYZ2.z = depth2.at<double>(int(tp_UVs2[ i ].y),int(tp_UVs2[ i ].x),2);
 
-            p_UVs1.push_back( tp_UVs1[ i ] );
-            p_UVs2.push_back( tp_UVs2[ i ] );
+        if ( norm(p_XYZ1-p_XYZ2)>1)
+            continue;
 
-
-            cv::Point3f p_XYZ;
-            p_XYZ.x = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),0);
-            p_XYZ.y = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),1);
-            p_XYZ.z = depth1.at<double>(int(tp_UVs1[ i ].x),int(tp_UVs1[ i ].y),2);
-
-            p_XYZs1.push_back( tp_XYZs1[ i ] );
-
-
-            p_XYZ.x = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),0);
-            p_XYZ.y = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),1);
-            p_XYZ.z = depth2.at<double>(int(tp_UVs2[ i ].x),int(tp_UVs2[ i ].y),2);
-            p_XYZs2.push_back( tp_XYZs2[ i ] );
-
-            distMatches.push_back(  valid3Dmatches[ i ]   );
-
-        }
+        p_UVs1.push_back( tp_UVs1[ i ] );
+        p_UVs2.push_back( tp_UVs2[ i ] );
 
 
-        // cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
-        // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1,  distMatches, imgMatches );
-        // cv::imshow( "Good matches", imgMatches );
-        // cv::waitKey( 0 );
+
+
+        p_XYZs1.push_back( p_XYZ1 );
+        p_XYZs2.push_back( p_XYZ2 );
+
+        distMatches.push_back(  valid3Dmatches[ i ]   );
     }
-    else{
-        double camera_matrix_data[3][3] = {
-            {C.fx, 0, C.cx},
-            {0, C.fy, C.cy},
-            {0, 0, 1}
-        };
-        cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
-        Mat rvec,tvec;
-        Mat inliers;
-        cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.95, inliers );
-        // cout <<"inliers: "<<inliers.rows<<endl;
-        // cout <<"R="<<rvec<<endl;
-        // cout <<"t="<<tvec<<endl;
-        vector< DMatch > RANSACmatches;
-        for ( int i=0;i<inliers.rows;i++)
-        {
-
-            p_UVs1.push_back( tp_UVs1[ inliers.ptr<int>(i)[0]  ] );
-            p_UVs2.push_back( tp_UVs2[ inliers.ptr<int>(i)[0]  ] );
-
-            p_XYZs1.push_back( tp_XYZs1[ inliers.ptr<int>(i)[0]  ] );
-            p_XYZs2.push_back( tp_XYZs2[ inliers.ptr<int>(i)[0]  ] );
-
-            RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]  );
-
-        }
-
-        // cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
-        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
-        // cv::imshow( "RANSAC matches", imgMatches );
-        // cv::waitKey( 0 );
-    }
+    
     cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<< "   "<< p_XYZs2 << endl;

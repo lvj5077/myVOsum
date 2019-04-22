@@ -43,10 +43,10 @@ RM = /opt/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum"
+CMAKE_SOURCE_DIR = /Users/lingqiujin/Desktop/myVOsum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build"
+CMAKE_BINARY_DIR = /Users/lingqiujin/Desktop/myVOsum/build
 
 # Include any dependencies generated for this target.
 include src/CMakeFiles/pose_estimation.dir/depend.make
@@ -59,16 +59,16 @@ include src/CMakeFiles/pose_estimation.dir/flags.make
 
 src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o: src/CMakeFiles/pose_estimation.dir/flags.make
 src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o: ../src/pose_estimation.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o"
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o -c "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o"
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o -c /Users/lingqiujin/Desktop/myVOsum/src/pose_estimation.cpp
 
 src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i"
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.cpp" > CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/lingqiujin/Desktop/myVOsum/src/pose_estimation.cpp > CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i
 
 src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s"
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/pose_estimation.cpp" -o CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/lingqiujin/Desktop/myVOsum/src/pose_estimation.cpp -o CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s
 
 # Object files for target pose_estimation
 pose_estimation_OBJECTS = \
@@ -80,9 +80,9 @@ pose_estimation_EXTERNAL_OBJECTS =
 ../lib/libpose_estimation.a: src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
 ../lib/libpose_estimation.a: src/CMakeFiles/pose_estimation.dir/build.make
 ../lib/libpose_estimation.a: src/CMakeFiles/pose_estimation.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library ../../lib/libpose_estimation.a"
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && $(CMAKE_COMMAND) -P CMakeFiles/pose_estimation.dir/cmake_clean_target.cmake
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pose_estimation.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library ../../lib/libpose_estimation.a"
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && $(CMAKE_COMMAND) -P CMakeFiles/pose_estimation.dir/cmake_clean_target.cmake
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pose_estimation.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 src/CMakeFiles/pose_estimation.dir/build: ../lib/libpose_estimation.a
@@ -90,10 +90,10 @@ src/CMakeFiles/pose_estimation.dir/build: ../lib/libpose_estimation.a
 .PHONY : src/CMakeFiles/pose_estimation.dir/build
 
 src/CMakeFiles/pose_estimation.dir/clean:
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" && $(CMAKE_COMMAND) -P CMakeFiles/pose_estimation.dir/cmake_clean.cmake
+	cd /Users/lingqiujin/Desktop/myVOsum/build/src && $(CMAKE_COMMAND) -P CMakeFiles/pose_estimation.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/pose_estimation.dir/clean
 
 src/CMakeFiles/pose_estimation.dir/depend:
-	cd "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src/CMakeFiles/pose_estimation.dir/DependInfo.cmake" --color=$(COLOR)
+	cd /Users/lingqiujin/Desktop/myVOsum/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/lingqiujin/Desktop/myVOsum /Users/lingqiujin/Desktop/myVOsum/src /Users/lingqiujin/Desktop/myVOsum/build /Users/lingqiujin/Desktop/myVOsum/build/src /Users/lingqiujin/Desktop/myVOsum/build/src/CMakeFiles/pose_estimation.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/pose_estimation.dir/depend
 

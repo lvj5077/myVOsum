@@ -48,10 +48,10 @@ RM = /opt/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum"
+CMAKE_SOURCE_DIR = /Users/lingqiujin/Desktop/myVOsum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build"
+CMAKE_BINARY_DIR = /Users/lingqiujin/Desktop/myVOsum/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles/progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

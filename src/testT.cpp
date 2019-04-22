@@ -14,8 +14,8 @@ int main( int argc, char** argv )
 {
 
 
-	double depthL = 0.180;
-	double depthH = 5.000;
+	double depthL = 0.005;
+	double depthH = 8.000;
 
 	// CAMERA_INTRINSIC_PARAMETERS C;
 
@@ -52,11 +52,11 @@ int main( int argc, char** argv )
     // Mat depth2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031102.926851.png", CV_LOAD_IMAGE_UNCHANGED );
 
 
-    Mat rgb1 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/37/color/100.png", CV_LOAD_IMAGE_COLOR );
-    Mat depth1 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/37/depth/100.png", CV_LOAD_IMAGE_UNCHANGED ); 
+    Mat rgb1 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/28/color/1.png", CV_LOAD_IMAGE_COLOR );
+    Mat depth1 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/28/depth/1.png", CV_LOAD_IMAGE_UNCHANGED ); 
 
-    Mat rgb2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/37/color/100.png", CV_LOAD_IMAGE_COLOR );
-    Mat depth2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/37/depth/100.png", CV_LOAD_IMAGE_UNCHANGED );
+    Mat rgb2 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/22/color/1.png", CV_LOAD_IMAGE_COLOR );
+    Mat depth2 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/22/depth/1.png", CV_LOAD_IMAGE_UNCHANGED );
     // Mat rgb2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/40/color/100.png", CV_LOAD_IMAGE_COLOR );
     // Mat depth2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/40/depth/100.png", CV_LOAD_IMAGE_UNCHANGED );
 
@@ -72,10 +72,10 @@ int main( int argc, char** argv )
     float sy;
     CAMERA_INTRINSIC_PARAMETERS C;
 
-    int dataSize = 50;
-    int myFakedata = 1;
-    int randomNoise = 1;
-    int mismatch = 1;
+    int dataSize = 10;
+    int myFakedata = 0;
+    int randomNoise = 0;
+    int mismatch = 0;
     if(argc>=3) 
     { 
         myFakedata = (int)argv[2][0]-48;
@@ -102,6 +102,8 @@ int main( int argc, char** argv )
         }else{
             secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
         }
+
+
         // firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0099.dat";
         // secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0009.dat";
         // if (idx<10){
@@ -150,49 +152,114 @@ int main( int argc, char** argv )
         p_UVs2.clear();
         p_XYZs1.clear();
         p_XYZs2.clear();
-        myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        // myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-        cout << "3d-3d =========================================" <<endl;
+        string rgb1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/color/"+to_string(idx)+".png";
+        string rgb2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/color/"+to_string(idx)+".png";
+        string depth1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/depth/"+to_string(idx)+".png";
+        string depth2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/depth/"+to_string(idx)+".png";
+
+        rgb1 = imread ( rgb1_str, CV_LOAD_IMAGE_COLOR );
+        rgb2 = imread ( rgb2_str, CV_LOAD_IMAGE_COLOR );
+
+        depth1 = imread ( depth1_str, CV_LOAD_IMAGE_UNCHANGED ); 
+        depth2 = imread ( depth2_str, CV_LOAD_IMAGE_UNCHANGED );
+
+        // myBase_SR4k.findMatches(f1_4k.rgb,f2_4k.rgb,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        // myBase_SR4k.findMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+        // myBase_SR4k.findMatches(rgb1,rgb2,depth1,depth2, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
+
+        // for(int i = 0;i<5;i++){
+        //     for(int j =0;j<5;j++){
+        //         if (abs(double(depth2.ptr<unsigned short> ( j ) [ i ]) - double((f1_4k.z).ptr<unsigned short> ( j ) [ i ]))>2){
+        //         // if (abs(double(rgb1.ptr<int> ( j ) [ i ]) - double((f2_4k.rgb).ptr<int> ( j ) [ i ]))>1){    
+        //             cout << double(depth2.ptr<unsigned short> ( j ) [ i ]) << "~~~"<<(f1_4k.z).ptr<unsigned short> ( j ) [ i ]<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //         }
+        //     }
+        // }
+        // for(int i = 0;i<5;i++){
+        //     for(int j =0;j<5;j++){
+        //         if (abs(double(depth1.ptr<unsigned short> ( j ) [ i ]) - double((f2_4k.z).ptr<unsigned short> ( j ) [ i ]))>2){
+        //             cout << double(depth1.ptr<unsigned short> ( j ) [ i ]) << "~~~"<<(f2_4k.z).ptr<unsigned short> ( j ) [ i ]<<endl; 
+
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //         }
+        //     }
+        // }
+
+        // for(int i = 0;i<5;i++){
+        //     for(int j =0;j<5;j++){
+        //         if (abs(double(rgb1.ptr<uchar> ( j ) [ i ]) - double((f2_4k.rgb).ptr<uchar> ( j ) [ i ]))>2){
+        //             cout << double(rgb1.ptr<uchar> ( j ) [ i ]) << "~~~"<<double((f2_4k.rgb).ptr<uchar> ( j ) [ i ])<<endl; 
+
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //             // cout <<"hjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsdddddddddhjbsddddddddd"<<endl;
+        //         }
+        //     }
+        // }
+
+        // cout << "3d-3d =========================================" <<endl;
         // for (int i =0;i<p_XYZs1.size();i++){
         //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<"    "<< p_UVs1[i]<<"  "<<p_UVs2[i] <<endl;
         // }
 
-        float myRoll = 0*3.1415926/180;
-        float myPitch = 6*3.1415926/180;
+        float myRoll = -6*3.1415926/180;
+        float myPitch = 0*3.1415926/180;
         float myYaw = 0*3.1415926/180;
         Mat myR = myBase_SR4k.eulerAnglesToRotationMatrix(myRoll, myPitch, myYaw);
         Mat Tgt = cv::Mat::eye(4,4,CV_64F);
         myR.copyTo(Tgt(cv::Rect(0, 0, 3, 3)));
 
-        if (myFakedata){
-            p_XYZs2.clear();
-            for (int i =0;i<p_XYZs1.size();i++){
-                cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
-                cv::Mat dstMat = Tgt*ptMat;
-                cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
-                // cout << p_XYZs1[ i ]<<endl;
-                // cout << projPd1<<endl;
-                // cout << "=============================="<<endl;
-                if (randomNoise){
-                    projPd1.x = projPd1.x+ (rand() % 10 -4.5)/200 ;
-                    projPd1.y = projPd1.y+ (rand() % 10 -4.5)/200 ;
-                    projPd1.z = projPd1.z+ (rand() % 10 -4.5)/200 ;               
-                }
-                if (mismatch && (i %20) ==1 ){
+        vector<Point3f> p_XYZs;
+        vector<Point3f> p_XYZst;
+        for (int i =0;i<p_XYZs1.size();i++){
+            cv::Mat ptMat = (cv::Mat_<double>(4, 1) << p_XYZs1[ i ].x, p_XYZs1[ i ].y, p_XYZs1[ i ].z, 1);
+            cv::Mat dstMat = Tgt*ptMat;
+            cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
+            // cout << "check data "<<p_XYZs1[ i ]<< "  "<< p_XYZs2[ i ]<< "  "<< projPd1<< " "
+            //         << (p_XYZs2[ i ] - projPd1)<<"  "<< norm((p_XYZs2[ i ] - projPd1))<<endl;
+            // cout << projPd1<<endl;
+            
+            if (randomNoise==1){
+                projPd1.x = projPd1.x+ (rand() % 10 -4.5)/200 ;
+                projPd1.y = projPd1.y+ (rand() % 10 -4.5)/200 ;
+                projPd1.z = projPd1.z+ (rand() % 10 -4.5)/200 ;               
+            }
+            if (mismatch==1){
+                if ((i %20) ==1){
                     projPd1.x = (rand() % 10 -4.5)/20 ;
                     projPd1.y = (rand() % 10 -4.5)/20 ;
-                    projPd1.z = (rand() % 10 -4.5)/20 ;               
+                    projPd1.z = (rand() % 10 -4.5)/20 ;   
                 }
-
-                p_XYZs2.push_back( projPd1 );
-            }  
-            // cout << "3d-3d" <<endl;
-            // for (int i =0;i<p_XYZs1.size();i++){
-            //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<endl;
+        
+            }
+            // if (norm((p_XYZs2[ i ] - projPd1)) < 0.1){
+            //     p_XYZs.push_back( p_XYZs2[ i ] );
+            //     p_XYZst.push_back( p_XYZs1[ i ] );
+            //     // cout << " norm(projPd1-pd2)  "<< norm(projPd1-pd2)<<endl;
             // }
+            p_XYZs.push_back( projPd1 );
+            p_XYZst.push_back( p_XYZs1[ i ] );
+        }  
+
+        if (myFakedata == 1){
+            p_XYZs2.clear();
+            p_XYZs2 = p_XYZs;
+            p_XYZs1.clear();
+            p_XYZs1 = p_XYZst;
         }
 
-
+        cout << "p_XYZs1.size() "<< p_XYZs1.size()<<endl;
  
         cout << "======================================"<<endl;
 
@@ -201,12 +268,15 @@ int main( int argc, char** argv )
         double baseE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, Tgt);
         cout << "groundTruth error " << 1000*baseE<< " mm"<<endl<<endl;
 
-        char method = '5';
+        char method = '0';
         if(argc>=2) 
         { 
             method = argv[1][0]; 
         } 
 
+        cv::Mat outM3by4G;// = cv::Mat::zeros(3,4,CV_64F);            
+        cv::Mat inliers3dG;
+        std::vector<int> inliers;
         switch(method) {
           case '1' :
             myVO_SR4k.pose3d3d_SVD(p_XYZs2, p_XYZs1, mat_r, vec_t, &T );
@@ -230,13 +300,26 @@ int main( int argc, char** argv )
             cout << "pose3d3d_dirctSVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
             break;
           case '4' :
-            myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs1, p_XYZs2, mat_r, vec_t, &T );
-            myBase_SR4k.rotMtoRPY(T, roll, pitch, yaw);
+            myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs2, p_XYZs1, mat_r, vec_t, inliers,&T );
+            myBase_SR4k.rotMtoRPY(mat_r, roll, pitch, yaw);
             cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
             rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T);
             cout << "RANSACpose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
+            break;
+          case '5' :
+            cv::estimateAffine3D(p_XYZs2,p_XYZs1, outM3by4G, inliers3dG, 0.5, 0.8); 
+            myBase_SR4k.rotMtoRPY(outM3by4G, roll, pitch, yaw);
+            cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+            break;
+          // case '5' :
+          //   cv::Mat outM3by4G;// = cv::Mat::zeros(3,4,CV_64F);            
+          //   cv::Mat inliers3dG;
+          //   cv::estimateAffine3D(p_XYZs2,p_XYZs1, outM3by4G, inliers3dG, 3, 0.999); 
+          //   myBase_SR4k.rotMtoRPY(outM3by4G, roll, pitch, yaw);
+          //   cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+          //   break;
           default :
-             cout << "Invalid grade" << endl;
+             cout << "Invalid" << endl;
         }
 
         mroll.at<double>(idx-1) = roll;

@@ -1,5 +1,6 @@
 #include "slamBase.h"
-
+#include <opencv2/ml.hpp>
+// #include <miniflann.hpp>
 
 #include <opencv2/opencv.hpp>  
 #include <opencv2/features2d/features2d.hpp>
@@ -46,6 +47,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
     int height = 144;
 
     cv::Mat I_gray = cv::Mat::zeros(height,width,CV_64F);
+    cv::Mat I_z = cv::Mat::zeros(height,width,CV_64F);
 
     int size[3] = { width, height, 3 };
     cv::Mat I_depth(3, size, CV_64F, cv::Scalar(10));
@@ -64,6 +66,7 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
             for (int i = 0; i < width; i++)
             {
                 inFile >> I_depth.at<double>(int(lineIdx-1),i,2) ;
+                I_z.at<double>(int(lineIdx-1),i) = I_depth.at<double>(int(lineIdx-1),i,2);
             }
         }
 
@@ -71,14 +74,16 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
         {
             for (int i = 0; i < width; i++)
             {
-                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,0) ;
+                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) ;
+                I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) = -I_depth.at<double>(int(lineIdx-1 -(height+1)*1 ),i,1) ;
             }
         }
         if (lineIdx > (height+1)*2 && lineIdx<(height+1)*3)
         {
             for (int i = 0; i < width; i++)
             {
-                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,1);
+                inFile >> I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0);
+                I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0) = -I_depth.at<double>(int(lineIdx-1 -(height+1)*2 ),i,0);
             }
         }
 
@@ -99,8 +104,20 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 
     // equalizeHist( I_gray, I_gray );
 
+    // GaussianBlur(I_gray, I_gray, Size(3, 3), 1);
+
+    // GaussianBlur(I_z, I_z, Size(3, 3), 1);
+
     f.rgb = I_gray.clone();
     f.depthXYZ = I_depth.clone();
+
+
+    I_z = I_z*1000; 
+    I_z.convertTo(I_z,CV_16U);
+    f.z= I_z.clone();
+
+    
+
 
     return f;
 }
@@ -109,131 +126,126 @@ SR4kFRAME slamBase::readSRFrame( string inFileName){
 void slamBase::findMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 			vector<Point2f> &p_UVs1,vector<Point2f> &p_UVs2,vector<Point3f> &p_XYZs1,vector<Point3f> &p_XYZs2){
 
-	vector<Point2f> tp_UVs1;
-	vector<Point2f> tp_UVs2;
-	vector<Point3f> tp_XYZs1;
-	vector<Point3f> tp_XYZs2;
-
-	vector<KeyPoint> keypoints_1, keypoints_2;
+    vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
 
-    // Ptr<FeatureDetector> detector = ORB::create();
-    // Ptr<DescriptorExtractor> descriptor = ORB::create();
+    vector<Point2f> tp_UVs1;
+    vector<Point2f> tp_UVs2;
+    vector<Point3f> tp_XYZs1;
+    vector<Point3f> tp_XYZs2;
 
-    // detector->detect ( rgb1,keypoints_1 );
-    // detector->detect ( rgb2,keypoints_2 );
-
-    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
-
-    // Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
-    // vector<DMatch> match;
-    // matcher->match ( descriptors_1, descriptors_2, match );
-
-    // double min_dist=10000, max_dist=0;
-
-    // for ( int i = 0; i < descriptors_1.rows; i++ )
-    // {
-    //     double dist = match[i].distance;
-    //     if ( dist < min_dist ) min_dist = dist;
-    //     if ( dist > max_dist ) max_dist = dist;
-    // }
-
-    // // printf ( "-- Max dist : %f \n", max_dist );
-    // // printf ( "-- Min dist : %f \n", min_dist );
-
-    // vector< DMatch > matches;
-    // for ( int i = 0; i < descriptors_1.rows; i++ )
-    // {
-    //     if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
-    //     {
-    //         matches.push_back ( match[i] );
-    //     }
-    // }
-
-    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(80,3,.08,20,.8);
+    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(0,5,.002);
     f2d->detect ( rgb1,keypoints_1 );
     f2d->detect ( rgb2,keypoints_2 );
 
     f2d->compute ( rgb1, keypoints_1, descriptors_1 );
     f2d->compute ( rgb2, keypoints_2, descriptors_2 );
 
-    BFMatcher matcher(NORM_L2);
+    // BFMatcher matcher(NORM_L2);
     vector< DMatch > matches;
-    matcher.match(descriptors_1,descriptors_2, matches);
+    // matcher.match(descriptors_1,descriptors_2, matches);
 
-    nth_element(matches.begin(),matches.begin()+50,matches.end());
-    matches.erase(matches.begin()+50,matches.end());
+    vector< DMatch > goodMatches;
 
+    // nth_element(matches.begin(),matches.begin()+50,matches.end());
+    // matches.erase(matches.begin()+50,matches.end());
 
+    cout << "found " << descriptors_1.rows<<endl;
+    int k = 2; 
+    double sum_dis = 0;     
+    double dis_ratio = 0.5; 
+
+    cv::flann::Index* mpFlannIndex = new cv::flann::Index(descriptors_1, cv::flann::KDTreeIndexParams()); 
+
+    int start_feature = 0; 
+    int num_features = descriptors_2.rows; 
+    cv::Mat indices(num_features, k, CV_32S); 
+    cv::Mat dists(num_features, k, CV_32F); 
+    cv::Mat relevantDescriptors = descriptors_2.clone(); 
+
+    mpFlannIndex->knnSearch(relevantDescriptors, indices, dists, k, flann::SearchParams(16) ); 
+
+    int* indices_ptr = indices.ptr<int>(0); 
+    float* dists_ptr = dists.ptr<float>(0); 
+    cv::DMatch m;
+    set<int> train_ids; 
+    for(int i=0; i<indices.rows; i++){
+        float dis_factor = dists_ptr[i*2] / dists_ptr[i*2+1]; 
+        if(dis_factor < dis_ratio ){
+            int train_id = indices_ptr[i*2]; 
+            if(train_ids.count(train_id) > 0) { // already add this feature 
+                // TODO: select the best matched pair 
+                continue; 
+            }
+            // add this match pair  
+            m.trainIdx = train_id; 
+            m.queryIdx = i; 
+            m.distance = dis_factor;
+            goodMatches.push_back(m);
+            train_ids.insert(train_id); 
+        }
+    }
+    // goodMatches = matches;
     cv::Mat imgMatches;
-    // cout <<"Find total "<<matches.size()<<" matches."<<endl;
-    // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
-    // cv::imshow( "matches", imgMatches );
+
+
+    // cout <<"Find total "<<goodMatches.size()<<" matches."<<endl;
+    // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1, goodMatches, imgMatches );
+    // cv::imshow( "Good matches", imgMatches );
     // cv::waitKey( 0 );
 
+
+
     vector< DMatch > valid3Dmatches;
-    for ( DMatch m:matches )
+    int dupx1,dupy1,dupx2,dupy2;
+    for ( DMatch m:goodMatches )
     {
 
-        cv::Point2f p1 = keypoints_1[m.queryIdx].pt;
-        cv::Point2f p2 = keypoints_2[m.trainIdx].pt;
-
+        cv::Point2f p1 = keypoints_1[m.trainIdx].pt;
+        cv::Point2f p2 = keypoints_2[m.queryIdx].pt;
+        // cout << p1 << " ~~pvp~~  " << p2<<endl;
+        // cout <<depth1<<endl;
         double d1 = double(depth1.ptr<unsigned short> ( int ( p1.y ) ) [ int ( p1.x ) ])/C.scale;
         double d2 = double(depth2.ptr<unsigned short> ( int ( p2.y ) ) [ int ( p2.x ) ])/C.scale;
-
-        // d1 = 2;
-        // d2 = 2;
-        if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
+        // cout << d1 << " ~~dvd~~  " << d2<<endl;
+        // if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
+        if ( d1 == 0 || d2 == 0 || d1>9 || d2>9) 
             continue;
 
+        if (dupx1 == int(p1.x) && dupy1 == int(p1.y) && dupx2 == int(p2.x) && dupy2 == int(p2.y))
+            continue;
 
-        tp_UVs1.push_back( p1 );
-		tp_UVs2.push_back( p2 );
+        dupx1 = int(p1.x);
+        dupy1 = int(p1.y);
+        dupx2 = int(p2.x);
+        dupy2 = int(p2.y);
 
-        cv::Point3f p_XYZ;
-        p_XYZ = point2dTo3d(p1,d1,C);
-        tp_XYZs1.push_back( p_XYZ );
-        p_XYZ = point2dTo3d(p2,d2,C);
-		tp_XYZs2.push_back( p_XYZ );
 
-		valid3Dmatches.push_back(m);
+        cv::Point3f p_XYZ1,p_XYZ2;
+        p_XYZ1 = point2dTo3d(p1,d1,C);
+        p_XYZ2 = point2dTo3d(p2,d2,C);
+        // if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
+        if ( norm(p_XYZ1-p_XYZ2)>.5)
+            continue;
 
-    }
-	double camera_matrix_data[3][3] = {
-	    {C.fx, 0, C.cx},
-	    {0, C.fy, C.cy},
-	    {0, 0, 1}
-	};
-	cv::Mat cameraMatrix( 3, 3, CV_64F, camera_matrix_data );
-    Mat rvec,tvec;
-    Mat inliers;
-    cv::solvePnPRansac( tp_XYZs1, tp_UVs2, cameraMatrix, cv::Mat(), rvec, tvec, false, 100, 10, 0.95, inliers );
+        p_UVs1.push_back( p1 );
+        p_UVs2.push_back( p2 );
 
-    // cout <<"inliers: "<<inliers.rows<<endl;
-    // cout <<"R="<<rvec<<endl;
-    // cout <<"t="<<tvec<<endl;
-    vector< DMatch > RANSACmatches;
-    for ( int i=0;i<inliers.rows;i++)
-    {
 
-        p_UVs1.push_back( tp_UVs1[ inliers.ptr<int>(i)[0]  ] );
-		p_UVs2.push_back( tp_UVs2[ inliers.ptr<int>(i)[0]  ] );
+        p_XYZs1.push_back( p_XYZ1 );
+        p_XYZs2.push_back( p_XYZ2 );
 
-        p_XYZs1.push_back( tp_XYZs1[ inliers.ptr<int>(i)[0]  ] );
-		p_XYZs2.push_back( tp_XYZs2[ inliers.ptr<int>(i)[0]  ] );
 
-		RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]   );
+        valid3Dmatches.push_back(m);
 
     }
 
-    cout <<"Find total "<<inliers.rows<<" RANSAC inlier matches."<<endl;
-    cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, RANSACmatches, imgMatches );
-    cv::imshow( "RANSAC inlier matches", imgMatches );
-    cv::waitKey( 0 );
+    // cout<<"3d-3d tp_XYZs2: "<<p_XYZs1<< "   "<< p_XYZs2 << endl;
+    // cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
+    // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1,  valid3Dmatches, imgMatches );
+    // cv::imshow( "valid3Dmatches", imgMatches );
+    // cv::waitKey( 0 );
 
-    // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
-    // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
 }
 
 void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
@@ -246,41 +258,6 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
     vector<Point2f> tp_UVs2;
     vector<Point3f> tp_XYZs1;
     vector<Point3f> tp_XYZs2;
-
-    // // using orb
-    // Ptr<FeatureDetector> detector = ORB::create();
-    // Ptr<DescriptorExtractor> descriptor = ORB::create();
-
-    // detector->detect ( rgb1,keypoints_1 );
-    // detector->detect ( rgb2,keypoints_2 );
-
-    // descriptor->compute ( rgb1, keypoints_1, descriptors_1 );
-    // descriptor->compute ( rgb2, keypoints_2, descriptors_2 );
-
-    // Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
-    // vector<DMatch> match;
-    // matcher->match ( descriptors_1, descriptors_2, match );
-
-    // double min_dist=10000, max_dist=0;
-
-    // for ( int i = 0; i < descriptors_1.rows; i++ )
-    // {
-    //     double dist = match[i].distance;
-    //     if ( dist < min_dist ) min_dist = dist;
-    //     if ( dist > max_dist ) max_dist = dist;
-    // }
-
-    // printf ( "-- Max dist : %f \n", max_dist );
-    // printf ( "-- Min dist : %f \n", min_dist );
-
-    // vector< DMatch > matches;
-    // for ( int i = 0; i < descriptors_1.rows; i++ )
-    // {
-    //     if ( match[i].distance <= max ( 2*min_dist, 30.0 ) )
-    //     {
-    //         matches.push_back ( match[i] );
-    //     }
-    // }
 
         // int     nfeatures = 0,
         // int     nOctaveLayers = 3,
@@ -295,32 +272,89 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 // edgeThreshold   The threshold used to filter out edge-like features. Note that the its meaning is different from the contrastThreshold, i.e. the larger the edgeThreshold, the less features are filtered out (more features are retained).
 // sigma   The sigma of the Gaussian applied to the input image at the octave #0. If your image is captured with a weak camera with soft lenses, you might want to reduce the number.
 
-    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(80,3,.08,20,.8);
+    // cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(80,3,.08,20,.8);
+    cv::Ptr<Feature2D> f2d = xfeatures2d::SIFT::create(0,5,.002);
     f2d->detect ( rgb1,keypoints_1 );
     f2d->detect ( rgb2,keypoints_2 );
 
     f2d->compute ( rgb1, keypoints_1, descriptors_1 );
     f2d->compute ( rgb2, keypoints_2, descriptors_2 );
 
-    BFMatcher matcher(NORM_L2);
+    // BFMatcher matcher(NORM_L2);
     vector< DMatch > matches;
-    matcher.match(descriptors_1,descriptors_2, matches);
+    // matcher.match(descriptors_1,descriptors_2, matches);
 
-    nth_element(matches.begin(),matches.begin()+50,matches.end());
-    matches.erase(matches.begin()+50,matches.end());
+    vector< DMatch > goodMatches;
 
+    // nth_element(matches.begin(),matches.begin()+50,matches.end());
+    // matches.erase(matches.begin()+50,matches.end());
+
+    cout << "found " << descriptors_1.rows<<endl;
+    int k = 2; 
+    double sum_dis = 0;     
+    double dis_ratio = 0.5; 
+
+    cv::flann::Index* mpFlannIndex = new cv::flann::Index(descriptors_1, cv::flann::KDTreeIndexParams()); 
+
+    int start_feature = 0; 
+    int num_features = descriptors_2.rows; 
+    cv::Mat indices(num_features, k, CV_32S); 
+    cv::Mat dists(num_features, k, CV_32F); 
+    cv::Mat relevantDescriptors = descriptors_2.clone(); 
+
+    mpFlannIndex->knnSearch(relevantDescriptors, indices, dists, k, flann::SearchParams(16) ); 
+
+    int* indices_ptr = indices.ptr<int>(0); 
+    float* dists_ptr = dists.ptr<float>(0); 
+    cv::DMatch m;
+    set<int> train_ids; 
+    for(int i=0; i<indices.rows; i++){
+        float dis_factor = dists_ptr[i*2] / dists_ptr[i*2+1]; 
+        if(dis_factor < dis_ratio ){
+            int train_id = indices_ptr[i*2]; 
+            if(train_ids.count(train_id) > 0) { // already add this feature 
+                // TODO: select the best matched pair 
+                continue; 
+            }
+            // add this match pair  
+            m.trainIdx = train_id; 
+            m.queryIdx = i; 
+            m.distance = dis_factor;
+            goodMatches.push_back(m);
+            train_ids.insert(train_id); 
+        }
+    }
+    // goodMatches = matches;
     cv::Mat imgMatches;
 
+
+    // cout <<"Find total "<<goodMatches.size()<<" matches."<<endl;
+    // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1, goodMatches, imgMatches );
+    // cv::imshow( "Good matches", imgMatches );
+    // cv::waitKey( 0 );
+
+
+
     vector< DMatch > valid3Dmatches;
-    for ( DMatch m:matches )
+    int dupx1,dupy1,dupx2,dupy2;
+    for ( DMatch m:goodMatches )
     {
 
-        cv::Point2f p1 = keypoints_1[m.queryIdx].pt;
-        cv::Point2f p2 = keypoints_2[m.trainIdx].pt;
+        cv::Point2f p1 = keypoints_1[m.trainIdx].pt;
+        cv::Point2f p2 = keypoints_2[m.queryIdx].pt;
         double d1 = depth1.at<double>(int(p1.x),int(p1.y),0);
         double d2 = depth2.at<double>(int(p2.x),int(p2.y),0);
-        if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
+        // if ( d1<C.depthL||d1>C.depthH || d2<C.depthL||d2>C.depthH)   // bad depth
+        if ( d1 == 0 || d2 == 0 || d1>9 || d2>9) 
             continue;
+
+        if (dupx1 == int(p1.x) && dupy1 == int(p1.y) && dupx2 == int(p2.x) && dupy2 == int(p2.y))
+            continue;
+
+        dupx1 = int(p1.x);
+        dupy1 = int(p1.y);
+        dupx2 = int(p2.x);
+        dupy2 = int(p2.y);
 
         tp_UVs1.push_back( p1 );
         tp_UVs2.push_back( p2 );
@@ -340,24 +374,28 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
     }
 
+    // cout<<"3d-3d tp_XYZs2: "<<tp_XYZs2<< "   "<< tp_XYZs2 << endl;
     // cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
-    // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, matches, imgMatches );
-    // cv::imshow( "matches", imgMatches );
+    // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1,  valid3Dmatches, imgMatches );
+    // cv::imshow( "valid3Dmatches", imgMatches );
     // cv::waitKey( 0 );
 
     int no_RANSAC = 1;
     if (no_RANSAC){
+        p_XYZs1.clear();
+        p_XYZs2.clear();
+
         // p_XYZs1 = tp_XYZs1;
         // p_XYZs2 = tp_XYZs2;
         // p_UVs1 = tp_UVs1;
         // p_UVs2 = tp_UVs2;
-        p_XYZs1.clear();
-        p_XYZs2.clear();
+
         vector< DMatch > distMatches;
         for ( int i=0;i<tp_XYZs1.size();i++)
         {
             // cout << norm(tp_UVs1[i]-tp_UVs2[i]) << "  " << norm(tp_XYZs1[i]-tp_XYZs2[i])<<endl;
-            if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>.5)
+            // if ( norm(tp_UVs1[i]-tp_UVs2[i])> 40 && norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
+            if ( norm(tp_XYZs1[i]-tp_XYZs2[i])>1)
                 continue;
 
             p_UVs1.push_back( tp_UVs1[ i ] );
@@ -382,10 +420,9 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
         }
 
 
-
-        // cout <<"Find total "<<distMatches.size()<<" matches."<<endl;
-        // cv::drawMatches( rgb1, keypoints_1, rgb2, keypoints_2, distMatches, imgMatches );
-        // cv::imshow( "matches", imgMatches );
+        // cout <<"Find total "<<valid3Dmatches.size()<<" matches."<<endl;
+        // cv::drawMatches( rgb2, keypoints_2, rgb1, keypoints_1,  distMatches, imgMatches );
+        // cv::imshow( "Good matches", imgMatches );
         // cv::waitKey( 0 );
     }
     else{
@@ -411,7 +448,7 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
             p_XYZs1.push_back( tp_XYZs1[ inliers.ptr<int>(i)[0]  ] );
             p_XYZs2.push_back( tp_XYZs2[ inliers.ptr<int>(i)[0]  ] );
 
-            RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]   );
+            RANSACmatches.push_back(  valid3Dmatches[ inliers.ptr<int>(i)[0] ]  );
 
         }
 
@@ -422,7 +459,7 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
     }
     cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
-    // cout<<"3d-3d pairs: "<<p_XYZs1<<endl;
+    // cout<<"3d-3d pairs: "<<p_XYZs1<< "   "<< p_XYZs2 << endl;
 }
 
 
@@ -495,6 +532,11 @@ void slamBase::rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw){
     roll = 180/3.14159265*atan2(mat_r.at<double>(2,1) , mat_r.at<double>(2,2));
     pitch = 180/3.14159265*atan2(-mat_r.at<double>(2,0), sy);
     yaw = 180/3.14159265*atan2(mat_r.at<double>(1,0), mat_r.at<double>(0,0));
+    // if (pitch<0){
+    //     pitch = -pitch;
+    //     roll = -roll;
+    //     yaw = -yaw;
+    // }
 }
 
 

@@ -47,7 +47,7 @@ void pose_estimation::pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f
 
 }
 
-void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, Mat* T ){
+void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, std::vector<int> & inliers ,Mat* T ){
 
     // cv::Mat outM3by4G;// = cv::Mat::zeros(3,4,CV_64F);
     // cv::Mat inliers3dG;
@@ -74,13 +74,21 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
     int foundT = 0;
     int foundN = 0;
     int maxN = 0;
-    double inlierR = .1;
-    double errorThreshold = .4;
+    int inlierR = 20;
+    double errorThreshold = .1;
+
+    double inlierError = 0;
+    double minError = 10000;
+    int testPtsN = 3;
 
     Mat Tfound;
+    std::vector<int> finliers;
 
-    while (iterations < 900 ) { //&& foundT==0
+    while (iterations < 3000 ) { //&& foundT==0
+        iterations++;
+        // cout << "iterations " << iterations<<endl;
         foundN = 0; 
+        finliers.clear();
         std::srand ( unsigned ( std::time(0) ) );
         std::vector<int> myvector;
 
@@ -88,9 +96,12 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
 
         std::random_shuffle ( myvector.begin(), myvector.end() );
         vector<Point3f> test1,test2,check1,check2;
-        for (int i =0;i<3;i++){
+        // cout << "==================================="<<endl;
+        for (int i =0;i<testPtsN;i++){
+            // cout << " random pts  "<< myvector[i]<<endl;
             test1.push_back( p_XYZs1[myvector[i]]);
             test2.push_back( p_XYZs2[myvector[i]]);
+            finliers.push_back( myvector[i] );
         }
         // for (int i =3;i<N;i++){
         //     check1.push_back( p_XYZs1[myvector[i]]);
@@ -98,38 +109,79 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
         // }
         Mat fmat_r,fvec_t;
         cv::Mat Tfound = cv::Mat::eye(4,4,CV_64F);
-        pose3d3d_SVD(test2,test1,fmat_r,fvec_t,&Tfound );
+        pose3d3d_SVD(test1,test2,fmat_r,fvec_t,&Tfound );
         // T = cv::Mat::eye(4,4,CV_64F);    only translation
         // T.at<double>(0,3) = p_XYZs2[myvector[1]].x -p_XYZs1[myvector[1]].x;
         // T.at<double>(1,3) = p_XYZs2[myvector[1]].y -p_XYZs1[myvector[1]].y;
         // T.at<double>(2,3) = p_XYZs2[myvector[1]].z -p_XYZs1[myvector[1]].z;
+        float sy= sqrt(Tfound.at<double>(0,0) * Tfound.at<double>(0,0) +  Tfound.at<double>(1,0) * Tfound.at<double>(1,0) );
+        float roll = 180/3.14159265*atan2(Tfound.at<double>(2,1) , Tfound.at<double>(2,2));
+        float pitch = 180/3.14159265*atan2(-Tfound.at<double>(2,0), sy);
+        float yaw = 180/3.14159265*atan2(Tfound.at<double>(1,0), Tfound.at<double>(0,0));
 
-        for (int i =2;i<N;i++){
-            cv::Point3f pd1 = p_XYZs1[myvector[i]];
-            cv::Point3f pd2 = p_XYZs2[myvector[i]];
+
+        inlierError = 0;
+        for (int i =testPtsN;i<N;i++){
+            cv::Point3f pd2 = p_XYZs1[myvector[i]];
+            cv::Point3f pd1 = p_XYZs2[myvector[i]];
 
             cv::Mat ptMat = (cv::Mat_<double>(4, 1) << pd1.x, pd1.y, pd1.z, 1);
             cv::Mat dstMat = Tfound*ptMat;
             cv::Point3f projPd1(dstMat.at<double>(0,0), dstMat.at<double>(1,0),dstMat.at<double>(2,0));
             // cout << "projPd1 "<<projPd1<<endl;
-            if (norm(projPd1-pd2) < errorThreshold){
+
+
+            if (norm(projPd1-pd2) < errorThreshold ){ //
                 foundN++;
+                inlierError = norm(projPd1-pd2) +inlierError;
+                finliers.push_back( myvector[i] );
                 // cout << " norm(projPd1-pd2)  "<< norm(projPd1-pd2)<<endl;
             }
-
         }
 
-        if ( foundN > inlierR* N){
+
+        // if( abs(roll-0)<1 && abs(pitch-6)<1 && abs(yaw-0)<1){
+        //     cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+        //     cout <<"foundN "<<foundN<< " ======================== seems right "<< inlierError << endl;
+        //     // cout << "iterations " << iterations<<endl;
+        // }
+
+        if ( foundN > 0){
             foundT =1;
+            inlierError = inlierError/foundN;
+            // cout << "inlier " << foundN << " in "<< N <<endl;
         }  
-        if (foundN>maxN) {
-            maxN = foundN;
-            *T = Tfound;
-            mat_r = Tfound(cv::Rect(0,0,3,3));
-            vec_t = Tfound(cv::Rect(3,0,1,3));
+        if (foundN>=maxN ) { 
+            if (foundN==maxN && inlierError>minError){
+                // cout<<"no update"<<endl;
+            }
+            else
+            {
+                minError =  inlierError; 
+                maxN = max(maxN,foundN);
+                minError = min(inlierError,minError);
+                *T = Tfound;
+                mat_r = Tfound(cv::Rect(0,0,3,3));
+                vec_t = Tfound(cv::Rect(3,0,1,3));
+                inliers = finliers;
+                // cout <<"current maxN =====" << inlierError <<endl;
+                // sy= sqrt(fmat_r.at<double>(0,0) * fmat_r.at<double>(0,0) +  fmat_r.at<double>(1,0) * fmat_r.at<double>(1,0) );
+                // roll = 180/3.14159265*atan2(fmat_r.at<double>(2,1) , fmat_r.at<double>(2,2));
+                // pitch = 180/3.14159265*atan2(-fmat_r.at<double>(2,0), sy);
+                // yaw = 180/3.14159265*atan2(fmat_r.at<double>(1,0), fmat_r.at<double>(0,0));
+                // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl<<endl;
+            }
+            // cout <<"current maxN =============================" <<endl;
+            // sy= sqrt(fmat_r.at<double>(0,0) * fmat_r.at<double>(0,0) +  fmat_r.at<double>(1,0) * fmat_r.at<double>(1,0) );
+            // roll = 180/3.14159265*atan2(fmat_r.at<double>(2,1) , fmat_r.at<double>(2,2));
+            // pitch = 180/3.14159265*atan2(-fmat_r.at<double>(2,0), sy);
+            // yaw = 180/3.14159265*atan2(fmat_r.at<double>(1,0), fmat_r.at<double>(0,0));
+            // cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl<<endl;
         }
-        iterations++;
+        // cout << "I am here XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"<<endl;
     }
+
+
     if (foundT == 0){
         cout <<"no found========================================="<<endl;
         Mat Tm = cv::Mat::eye(4,4,CV_64F);
@@ -137,7 +189,10 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
         vec_t = Tm(cv::Rect(3,0,1,3));
         *T = Tm;
     }
-    cout << "inlier " << foundN << " in "<< N <<endl;
+    // cout << "inlier " << maxN + testPtsN<< " in "<< N <<endl;
+    cout << "inlier size " << inliers.size() << " in "<< N <<endl;
+    cout << "inlier error " << minError <<endl;
+    cout <<"======================================================================================================================="<<endl;
 
 }
 

@@ -24,7 +24,7 @@ class pose_estimation{
 		void pose3d3d_dirctSVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat& T);
 
 	    void pose3d3d_SVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat&  mat_r, Mat&  vec_t, Mat* T = NULL  );
-	    void RANSACpose3d3d_SVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat&  mat_r, Mat&  vec_t, Mat* T = NULL  );
+	    void RANSACpose3d3d_SVD(vector<Point3f> & p_XYZs1,vector<Point3f> & p_XYZs2, Mat&  mat_r, Mat&  vec_t, std::vector<int> & inliers, Mat* T = NULL  );
 	    void pose3d3d_SVD_Arun(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, Mat* T );
 
 	    void pose3d3d_BA( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & mat_r, Mat & vec_t, Mat& T);

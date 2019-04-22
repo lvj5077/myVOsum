@@ -28,7 +28,7 @@ struct CAMERA_INTRINSIC_PARAMETERS
 struct SR4kFRAME
 {
     int frameID;
-    cv::Mat rgb, depthXYZ;
+    cv::Mat rgb, depthXYZ, z;
 };
 
 class slamBase{

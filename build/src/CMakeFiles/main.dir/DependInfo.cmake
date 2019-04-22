@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/src/main.cpp" "/Users/lingqiujin/Google Drive/Monthly_Report/Completed/myVOsum/build/src/CMakeFiles/main.dir/main.cpp.o"
+  "/Users/lingqiujin/Desktop/myVOsum/src/main.cpp" "/Users/lingqiujin/Desktop/myVOsum/build/src/CMakeFiles/main.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 

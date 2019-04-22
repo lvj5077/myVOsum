@@ -4,17 +4,46 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/lingqiujin/Desktop/myVOsum/src/slamBase.cpp" "/Users/lingqiujin/Desktop/myVOsum/build/src/CMakeFiles/slamBase.dir/slamBase.cpp.o"
+  "/Users/lingqiujin/Q_MAC/work/myVOsum/src/slamBase.cpp" "/Users/lingqiujin/Q_MAC/work/myVOsum/build/src/CMakeFiles/slamBase.dir/slamBase.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "DISABLE_LIBUSB_1_0"
+  "DISABLE_PCAP"
+  "DISABLE_PNG"
+  "QT_CORE_LIB"
+  "QT_GUI_LIB"
+  "QT_NO_DEBUG"
+  "QT_SQL_LIB"
+  "QT_WIDGETS_LIB"
+  "vtkDomainsChemistry_AUTOINIT=1(vtkDomainsChemistryOpenGL2)"
+  "vtkIOExport_AUTOINIT=1(vtkIOExportOpenGL2)"
+  "vtkRenderingContext2D_AUTOINIT=1(vtkRenderingContextOpenGL2)"
+  "vtkRenderingCore_AUTOINIT=3(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingOpenGL2)"
+  "vtkRenderingFreeType_AUTOINIT=1(vtkRenderingFreeTypeFontConfig)"
+  "vtkRenderingOpenGL2_AUTOINIT=1(vtkRenderingGL2PSOpenGL2)"
+  "vtkRenderingVolume_AUTOINIT=1(vtkRenderingVolumeOpenGL2)"
+  )
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
-  "/usr/local/include/eigen3"
+  "/usr/include/libxml2"
   "/usr/local/Cellar/opencv@3/3.4.5_1/include"
   "/Users/lingqiujin/Third_Party_Packages/g2o"
   "/usr/local/Cellar/suite-sparse/5.3.0/include"
+  "/usr/local/opt/python/Frameworks/Python.framework"
+  "/usr/local/include/eigen3"
+  "/usr/local/Cellar/vtk/8.1.2_3/include/vtk-8.1"
+  "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/include/python3.7m"
+  "/usr/local/include"
+  "/usr/local/opt/hdf5/include"
+  "/usr/local/opt/szip/include"
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include/libxml2"
+  "/usr/local/include/pcl-1.9"
+  "/usr/local/Cellar/flann/1.9.1_7/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/build"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/include/opencv"
@@ -37,6 +66,16 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/objdetect/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/stitching/include"
   "/Users/lingqiujin/Third_Party_Packages/opencv-3.4.5/modules/videostab/include"
+  "/usr/local/opt/qt/lib/QtWidgets.framework"
+  "/usr/local/opt/qt/lib/QtWidgets.framework/Headers"
+  "/usr/local/opt/qt/lib/QtGui.framework"
+  "/usr/local/opt/qt/lib/QtGui.framework/Headers"
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework/Headers"
+  "/usr/local/opt/qt/lib/QtCore.framework"
+  "/usr/local/opt/qt/lib/QtCore.framework/Headers"
+  "/usr/local/opt/qt/./mkspecs/macx-clang"
+  "/usr/local/opt/qt/lib/QtSql.framework"
+  "/usr/local/opt/qt/lib/QtSql.framework/Headers"
   )
 
 # Targets to which this target links.

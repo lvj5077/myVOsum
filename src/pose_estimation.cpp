@@ -15,7 +15,7 @@
 #include <vector>       // std::vector
 #include <ctime>        // std::time
 #include <cstdlib>      // std::rand, std::srand
-
+#include <cmath>
 
 #include <chrono>
 

@@ -11,6 +11,11 @@
 #include <opencv2/core/eigen.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
+// PCL
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/common/transforms.h>
+// #include <pcl/visualization/cloud_viewer.h>
 
 
 #include <iostream>
@@ -19,10 +24,11 @@
 
 using namespace cv;
 using namespace std;
+using namespace pcl;
 
 struct CAMERA_INTRINSIC_PARAMETERS 
 { 
-    double cx, cy, fx, fy, scale, depthL, depthH;
+    double cx, cy, fx, fy, scale, depthL, depthH,height,width;
 };
 
 struct SR4kFRAME
@@ -56,4 +62,7 @@ class slamBase{
 	    double reprojectionError( vector<Point3f> & p_XYZs1, vector<Point3f> & p_XYZs2, Mat & T );
 	    void rotMtoRPY(Mat &mat_r, float &roll,float &pitch,float &yaw);
 	    Mat eulerAnglesToRotationMatrix(float roll,float pitch,float yaw);
+
+	    pcl::PointCloud<pcl::PointXYZ> cvPtsToPCL(vector<Point3f> &p_XYZs);
+	    vector<Point3f> imagToCVpt( Mat depth, CAMERA_INTRINSIC_PARAMETERS& camera );
 };

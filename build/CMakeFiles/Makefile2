@@ -59,10 +59,10 @@ RM = /opt/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/lingqiujin/Desktop/myVOsum
+CMAKE_SOURCE_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/lingqiujin/Desktop/myVOsum/build
+CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
 
 #=============================================================================
 # Directory level rules for directory src
@@ -99,7 +99,7 @@ src/CMakeFiles/testT.dir/all: src/CMakeFiles/myG2Oedge.dir/all
 src/CMakeFiles/testT.dir/all: src/CMakeFiles/slamBase.dir/all
 	$(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/depend
 	$(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=9,10 "Built target testT"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=9,10 "Built target testT"
 .PHONY : src/CMakeFiles/testT.dir/all
 
 # Include target in all.
@@ -109,9 +109,9 @@ all: src/CMakeFiles/testT.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/testT.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 8
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/testT.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/testT.dir/rule
 
 # Convenience name for target.
@@ -136,7 +136,7 @@ clean: src/CMakeFiles/testT.dir/clean
 src/CMakeFiles/pose_estimation.dir/all: src/CMakeFiles/myG2Oedge.dir/all
 	$(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/depend
 	$(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=5,6 "Built target pose_estimation"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=5,6 "Built target pose_estimation"
 .PHONY : src/CMakeFiles/pose_estimation.dir/all
 
 # Include target in all.
@@ -146,9 +146,9 @@ all: src/CMakeFiles/pose_estimation.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/pose_estimation.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/pose_estimation.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/pose_estimation.dir/rule
 
 # Convenience name for target.
@@ -173,7 +173,7 @@ clean: src/CMakeFiles/pose_estimation.dir/clean
 src/CMakeFiles/myG2Oedge.dir/all:
 	$(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/depend
 	$(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=3,4 "Built target myG2Oedge"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=3,4 "Built target myG2Oedge"
 .PHONY : src/CMakeFiles/myG2Oedge.dir/all
 
 # Include target in all.
@@ -183,9 +183,9 @@ all: src/CMakeFiles/myG2Oedge.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/myG2Oedge.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/myG2Oedge.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/myG2Oedge.dir/rule
 
 # Convenience name for target.
@@ -210,7 +210,7 @@ clean: src/CMakeFiles/myG2Oedge.dir/clean
 src/CMakeFiles/slamBase.dir/all:
 	$(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/depend
 	$(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=7,8 "Built target slamBase"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=7,8 "Built target slamBase"
 .PHONY : src/CMakeFiles/slamBase.dir/all
 
 # Include target in all.
@@ -220,9 +220,9 @@ all: src/CMakeFiles/slamBase.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/slamBase.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/slamBase.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/slamBase.dir/rule
 
 # Convenience name for target.
@@ -247,7 +247,7 @@ clean: src/CMakeFiles/slamBase.dir/clean
 src/CMakeFiles/main.dir/all:
 	$(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/depend
 	$(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles --progress-num=1,2 "Built target main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles --progress-num=1,2 "Built target main"
 .PHONY : src/CMakeFiles/main.dir/all
 
 # Include target in all.
@@ -257,9 +257,9 @@ all: src/CMakeFiles/main.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/main.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Desktop/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/main.dir/rule
 
 # Convenience name for target.

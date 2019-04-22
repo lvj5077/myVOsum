@@ -20,6 +20,9 @@ slamBase::slamBase(void)
 	C.fy = 521.0;
 	C.scale = 5000;
 
+    C.height = 480;
+    C.width = 640;
+
 	C.depthL = 0.18;
 	C.depthH = 5.0;
     // cout << "Object is being created" << endl;
@@ -418,7 +421,7 @@ void slamBase::find4kMatches(Mat rgb1,Mat rgb2,Mat depth1,Mat depth2,
 
         distMatches.push_back(  valid3Dmatches[ i ]   );
     }
-    
+
     cout << "p_XYZs1.size() "<<p_XYZs1.size()  << endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1.size() <<endl;
     // cout<<"3d-3d pairs: "<<p_XYZs1<< "   "<< p_XYZs2 << endl;
@@ -532,4 +535,37 @@ Mat slamBase::eulerAnglesToRotationMatrix(float roll,float pitch,float yaw)
      
     return R;
  
+}
+
+pcl::PointCloud<pcl::PointXYZ> slamBase::cvPtsToPCL(vector<Point3f> &p_XYZs)
+{
+    pcl::PointCloud<pcl::PointXYZ> cloud;
+    cloud.points.resize (p_XYZs.size());
+    for (size_t i=0; i<p_XYZs.size(); i++) {
+        cloud.points[i].x = p_XYZs[i].x;
+        cloud.points[i].y = p_XYZs[i].y;
+        cloud.points[i].z = p_XYZs[i].z;
+    }
+    cloud.height = 1;
+    cloud.width = cloud.points.size();
+    return cloud;
+}
+
+vector<Point3f> slamBase::imagToCVpt( Mat depth, CAMERA_INTRINSIC_PARAMETERS& camera ){
+    vector<Point3f> pts_cv;
+
+    for(int i=0;i<camera.width;i++){
+        for(int j=0;j<camera.height;j++){
+            cv::Point3f p;
+            double d = depth.at<double>(j,i,2);
+            p.z = float( d) ;
+            p.x = ( i - camera.cx) * p.z / camera.fx;
+            p.y = ( j - camera.cy) * p.z / camera.fy;
+
+
+            pts_cv.push_back(p);
+        }
+    }
+
+    return pts_cv;
 }

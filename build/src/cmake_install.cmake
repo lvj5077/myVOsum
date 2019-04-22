@@ -1,4 +1,4 @@
-# Install script for directory: /Users/lingqiujin/Desktop/myVOsum/src
+# Install script for directory: /Users/lingqiujin/Q_MAC/work/myVOsum/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

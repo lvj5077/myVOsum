@@ -9,6 +9,7 @@
 #include <stdlib.h>    
 
 using namespace std;
+using namespace pcl;
 
 int main( int argc, char** argv )
 {
@@ -38,6 +39,9 @@ int main( int argc, char** argv )
     C_sr4k.scale = 1000;
     C_sr4k.depthL = 0.180;
     C_sr4k.depthH = 7.000;
+    C_sr4k.height = 144;
+    C_sr4k.width = 176;
+
 
     // string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
     // string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0004.dat";
@@ -72,7 +76,7 @@ int main( int argc, char** argv )
     float sy;
     CAMERA_INTRINSIC_PARAMETERS C;
 
-    int dataSize = 10;
+    int dataSize = 1;
     int myFakedata = 0;
     int randomNoise = 0;
     int mismatch = 0;
@@ -153,6 +157,7 @@ int main( int argc, char** argv )
         p_XYZs1.clear();
         p_XYZs2.clear();
         
+        myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
         string rgb1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/color/"+to_string(idx)+".png";
         string rgb2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/color/"+to_string(idx)+".png";
@@ -161,16 +166,11 @@ int main( int argc, char** argv )
 
         rgb1 = imread ( rgb1_str, CV_LOAD_IMAGE_COLOR );
         rgb2 = imread ( rgb2_str, CV_LOAD_IMAGE_COLOR );
-
         depth1 = imread ( depth1_str, CV_LOAD_IMAGE_UNCHANGED ); 
         depth2 = imread ( depth2_str, CV_LOAD_IMAGE_UNCHANGED );
 
         // myBase_SR4k.findMatches(f1_4k.rgb,f2_4k.rgb,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
-        myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
         // myBase_SR4k.findMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
         // myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
         // myBase_SR4k.findMatches(rgb1,rgb2,depth1,depth2, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
@@ -243,6 +243,11 @@ int main( int argc, char** argv )
         cv::Mat outM3by4G;// = cv::Mat::zeros(3,4,CV_64F);            
         cv::Mat inliers3dG;
         std::vector<int> inliers;
+        PointCloud<pcl::PointXYZ> pc1;
+        PointCloud<pcl::PointXYZ> pc2;
+        PointCloud<pcl::PointXYZ> pc_12;
+        vector<Point3f> pts1;
+        vector<Point3f> pts2;
         switch(method) {
           case '1' :
             myVO_SR4k.pose3d3d_SVD(p_XYZs2, p_XYZs1, mat_r, vec_t, &T );
@@ -300,7 +305,33 @@ int main( int argc, char** argv )
         my.at<double>(idx-1) = y_mm ;
         mz.at<double>(idx-1) = z_mm ;
 
+        pts1 = myBase_SR4k.imagToCVpt( f1_4k.depthXYZ, C );
+        pts2 = myBase_SR4k.imagToCVpt( f2_4k.depthXYZ, C );
 
+        pc1 = myBase_SR4k.cvPtsToPCL(pts1);
+        pc2 = myBase_SR4k.cvPtsToPCL(pts2);
+        pcl::io::savePCDFile( "./pc1.pcd", pc1 );
+        pcl::io::savePCDFile( "./pc2.pcd", pc2 );
+
+        Eigen::Isometry3d T_eigen = Eigen::Isometry3d::Identity();
+        Eigen::Matrix3d r3;
+        cv::cv2eigen(mat_r, r3);
+        Eigen::AngleAxisd angle(r3);
+        T_eigen = angle;
+        T_eigen(0,3) = vec_t.at<double>(0,0); 
+        T_eigen(1,3) = vec_t.at<double>(1,0); 
+        T_eigen(2,3) = vec_t.at<double>(2,0);
+        cout << T <<endl;
+        cout << T_eigen.matrix()<<endl;
+        pcl::transformPointCloud( pc1, pc_12, T_eigen.matrix() );
+        pc_12 = pc_12+pc2;
+        pcl::io::savePCDFile( "./pc_12.pcd", pc_12 );
+        // pcl::visualization::CloudViewer viewer( "viewer" );
+        // viewer.showCloud( pc_12 );
+        // while( !viewer.wasStopped() )
+        // {
+            
+        // }
     }
 
     cv::Scalar mean,stddev;

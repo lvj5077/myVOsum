@@ -4,7 +4,7 @@
 src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
  ../include/myG2Oedge.h
  ../include/pose_estimation.h
- /Users/lingqiujin/work/myVOsum/src/pose_estimation.cpp
+ /Users/lingqiujin/work/myVO/src/pose_estimation.cpp
  /usr/local/Cellar/opencv@3/3.4.5_1/include/opencv/cxcore.h
  /usr/local/Cellar/opencv@3/3.4.5_1/include/opencv2/calib3d.hpp
  /usr/local/Cellar/opencv@3/3.4.5_1/include/opencv2/calib3d/calib3d.hpp

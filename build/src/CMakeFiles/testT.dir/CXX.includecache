@@ -58,7 +58,7 @@ fstream
 vector
 -
 
-/Users/lingqiujin/work/myVOsum/src/testT.cpp
+/Users/lingqiujin/work/myVO/src/testT.cpp
 algorithm
 -
 iostream
@@ -68,9 +68,9 @@ fstream
 sstream
 -
 pose_estimation.h
-/Users/lingqiujin/work/myVOsum/src/pose_estimation.h
+/Users/lingqiujin/work/myVO/src/pose_estimation.h
 slamBase.h
-/Users/lingqiujin/work/myVOsum/src/slamBase.h
+/Users/lingqiujin/work/myVO/src/slamBase.h
 stdlib.h
 -
 

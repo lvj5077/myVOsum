@@ -3,7 +3,6 @@ project(myVOsum)
 ADD_EXECUTABLE( main main.cpp) # always test cmake function first
 
 INCLUDE_DIRECTORIES ("/usr/local/include/eigen3/")
-INCLUDE_DIRECTORIES ("/usr/local/include/eigen3/")
 
 # # SET("PCL_DIR" "/home/jin/Third_party_packages/pcl-pcl-1.9.1/build")
 # SET(PCL_DIR "/usr/local/Cellar/pcl/")
@@ -22,6 +21,7 @@ SET(OpenCV_DIR "/usr/local/Cellar/opencv@3/3.4.5_1/share/OpenCV")
 find_package( OpenCV 3.1 REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 link_directories(${OpenCV_LIB_DIR})
+
 
 # include_directories( /usr/local/Cellar/opencv@3/3.4.5_1/include )
 # set(SIFT_LIBS "/usr/local/Cellar/opencv@3/3.4.5_1/lib/libopencv_xfeatures2d.dylib" )

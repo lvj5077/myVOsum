@@ -257,7 +257,11 @@ int main( int argc, char** argv )
           //   cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
           //   break;
           default :
-             cout << "Invalid" << endl;
+            myVO_SR4k.RANSACpose3d3d_SVD(p_XYZs2, p_XYZs1, mat_r, vec_t, inliers,&T );
+            myBase_SR4k.rotMtoRPY(mat_r, roll, pitch, yaw);
+            cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
+            rpE =  myBase_SR4k.reprojectionError( p_XYZs1, p_XYZs2, T);
+            cout << "RANSACpose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
         }
 
         mroll.at<double>(idx-1) = roll;
@@ -272,18 +276,18 @@ int main( int argc, char** argv )
         my.at<double>(idx-1) = y_mm ;
         mz.at<double>(idx-1) = z_mm ;
 
-        pts1 = myBase_SR4k.imagToCVpt( f1_4k.depthXYZ, C );
-        pts2 = myBase_SR4k.imagToCVpt( f2_4k.depthXYZ, C );
+        // pts1 = myBase_SR4k.imagToCVpt( f1_4k.depthXYZ, C );
+        // pts2 = myBase_SR4k.imagToCVpt( f2_4k.depthXYZ, C );
 
-        pc1 = myBase_SR4k.cvPtsToPCL(pts1);
-        pc2 = myBase_SR4k.cvPtsToPCL(pts2);
-        pcl::io::savePCDFile( "./pc1.pcd", pc1 );
-        pcl::io::savePCDFile( "./pc2.pcd", pc2 );
+        // pc1 = myBase_SR4k.cvPtsToPCL(pts1);
+        // pc2 = myBase_SR4k.cvPtsToPCL(pts2);
+        // pcl::io::savePCDFile( "./pc1.pcd", pc1 );
+        // pcl::io::savePCDFile( "./pc2.pcd", pc2 );
 
-        Eigen::Isometry3d T_eigen = myBase_SR4k.cvTtoEigenT(T);
-        pcl::transformPointCloud( pc1, pc_12, T_eigen.matrix() );
-        pc_12 = pc_12+pc2;
-        pcl::io::savePCDFile( "./pc_12.pcd", pc_12 );
+        // Eigen::Isometry3d T_eigen = myBase_SR4k.cvTtoEigenT(T);
+        // pcl::transformPointCloud( pc1, pc_12, T_eigen.matrix() );
+        // pc_12 = pc_12+pc2;
+        // pcl::io::savePCDFile( "./pc_12.pcd", pc_12 );
 
 
         // pcl::visualization::CloudViewer viewer( "viewer" );

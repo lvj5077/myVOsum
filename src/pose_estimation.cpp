@@ -75,7 +75,7 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
     int foundN = 0;
     int maxN = 0;
     int inlierR = 20;
-    double errorThreshold = .1;
+    double errorThreshold = .08;
 
     double inlierError = 0;
     double minError = 10000;
@@ -199,10 +199,16 @@ void pose_estimation::RANSACpose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3
 void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p_XYZs2, Mat & mat_r, Mat & vec_t, Mat* T ){
     Point3f p1, p2;     // center of mass
     int N = p_XYZs1.size();
+    double x=0;
+    double y=0;
+    double z=0;
     for ( int i=0; i<N; i++ )
     {
         p1 += p_XYZs1[i];
         p2 += p_XYZs2[i];
+        x = p_XYZs1[i].x - p_XYZs2[i].x+x;
+        y = p_XYZs1[i].y - p_XYZs2[i].y+y;
+        z = p_XYZs1[i].z - p_XYZs2[i].z+z;
     }
     p1 = Point3f( Vec3f(p1) /  N);
     p2 = Point3f( Vec3f(p2) / N);
@@ -250,6 +256,11 @@ void pose_estimation::pose3d3d_SVD(vector<Point3f>&  p_XYZs1,vector<Point3f>&  p
           R_ ( 2,0 ), R_ ( 2,1 ), R_ ( 2,2 )
         );
     vec_t = ( Mat_<double> ( 3,1 ) << t_ ( 0,0 ), t_ ( 1,0 ), t_ ( 2,0 ) );
+
+    // mat_r = cv::Mat::eye(3,3,CV_64F);
+    // vec_t.at<double>(0,0) = x/N;
+    // vec_t.at<double>(1,0) = y/N;
+    // vec_t.at<double>(2,0) = z/N;
 
     if(T != NULL) {
         Mat T_m = cv::Mat::eye(4,4,CV_64F);

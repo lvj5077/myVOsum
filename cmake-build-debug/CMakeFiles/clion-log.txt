@@ -1,0 +1,80 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/lingqiujin/work/myVOsum
+-- The C compiler identification is AppleClang 10.0.1.10010046
+-- The CXX compiler identification is AppleClang 10.0.1.10010046
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Checking for module 'eigen3'
+--   Found eigen3, version 3.3.7
+-- Found Eigen: /usr/local/include/eigen3  
+-- Eigen found (include: /usr/local/include/eigen3, version: 3.3.7)
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_create
+-- Looking for pthread_create - found
+-- Found Threads: TRUE  
+-- Boost version: 1.69.0
+-- Found the following Boost libraries:
+--   system
+--   filesystem
+--   thread
+--   date_time
+--   iostreams
+--   serialization
+--   chrono
+--   atomic
+--   regex
+** WARNING ** io features related to pcap will be disabled
+** WARNING ** io features related to png will be disabled
+-- Found libusb-1.0: /usr/local/include  
+** WARNING ** io features related to libusb-1.0 will be disabled
+-- Checking for module 'flann'
+--   Found flann, version 1.9.1
+-- FLANN found (include: /usr/local/Cellar/flann/1.9.1_7/include, lib: flann;flann_cpp)
+-- FLANN found (include: /usr/local/Cellar/flann/1.9.1_7/include, lib: flann;flann_cpp)
+-- FLANN found (include: /usr/local/Cellar/flann/1.9.1_7/include, lib: flann;flann_cpp)
+-- FLANN found (include: /usr/local/Cellar/flann/1.9.1_7/include, lib: flann;flann_cpp)
+-- looking for PCL_COMMON
+-- Found PCL_COMMON: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_common.dylib  
+-- looking for PCL_OCTREE
+-- Found PCL_OCTREE: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_octree.dylib  
+-- looking for PCL_IO
+-- Found PCL_IO: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_io.dylib  
+-- looking for PCL_KDTREE
+-- Found PCL_KDTREE: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_kdtree.dylib  
+-- looking for PCL_GEOMETRY
+-- Found PCL_GEOMETRY: /usr/local/Cellar/pcl/1.9.1_4/include/pcl-1.9  
+-- looking for PCL_SEARCH
+-- Found PCL_SEARCH: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_search.dylib  
+-- looking for PCL_VISUALIZATION
+-- Found PCL_VISUALIZATION: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_visualization.dylib  
+-- looking for PCL_SAMPLE_CONSENSUS
+-- Found PCL_SAMPLE_CONSENSUS: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_sample_consensus.dylib  
+-- looking for PCL_FILTERS
+-- Found PCL_FILTERS: /usr/local/Cellar/pcl/1.9.1_4/lib/libpcl_filters.dylib  
+-- Found PCL: pcl_common;pcl_octree;pcl_io;pcl_kdtree;pcl_search;pcl_visualization;pcl_sample_consensus;pcl_filters;/usr/local/lib/libboost_system-mt.dylib;/usr/local/lib/libboost_filesystem-mt.dylib;/usr/local/lib/libboost_thread-mt.dylib;/usr/local/lib/libboost_date_time-mt.dylib;/usr/local/lib/libboost_iostreams-mt.dylib;/usr/local/lib/libboost_serialization-mt.dylib;/usr/local/lib/libboost_chrono-mt.dylib;/usr/local/lib/libboost_atomic-mt.dylib;/usr/local/lib/libboost_regex-mt.dylib;flann;flann_cpp;vtksys;vtkCommonCore;vtkCommonMath;vtkCommonMisc;vtkCommonSystem;vtkCommonTransforms;vtkCommonDataModel;vtkCommonColor;vtkCommonExecutionModel;vtkCommonComputationalGeometry;vtkFiltersCore;vtkFiltersGeneral;vtkImagingCore;vtkImagingFourier;vtkFiltersStatistics;vtkFiltersExtraction;vtkInfovisCore;vtkFiltersGeometry;vtkFiltersSources;vtkRenderingCore;/usr/lib/libz.dylib;vtkfreetype;vtkRenderingFreeType;vtkRenderingContext2D;vtkChartsCore;vtkDICOMParser;vtkdoubleconversion;vtklz4;vtklzma;vtkIOCore;vtkIOLegacy;/usr/lib/libexpat.dylib;vtkIOXMLParser;vtkDomainsChemistry;vtkglew;vtkRenderingOpenGL2;vtkDomainsChemistryOpenGL2;vtkIOXML;vtkParallelCore;vtkFiltersAMR;vtkFiltersFlowPaths;vtkFiltersGeneric;vtkImagingSources;vtkFiltersHybrid;vtkFiltersHyperTree;vtkImagingGeneral;vtkFiltersImaging;vtkFiltersModeling;vtkFiltersParallel;vtkFiltersParallelImaging;vtkFiltersPoints;vtkFiltersProgrammable;/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python;vtkPythonInterpreter;vtkWrappingTools;vtkWrappingPythonCore;vtkFiltersPython;vtkFiltersSMP;vtkFiltersSelection;vtkFiltersTexture;vtkFiltersTopology;verdict;vtkFiltersVerdict;vtkInteractionStyle;vtkGUISupportQt;vtksqlite;vtkIOSQL;vtkGUISupportQtSQL;vtkmetaio;/usr/local/lib/libjpeg.dylib;/usr/local/lib/libpng.dylib;/usr/local/lib/libtiff.dylib;vtkIOImage;vtkImagingHybrid;vtkInfovisLayout;vtkImagingColor;vtkRenderingAnnotation;vtkRenderingVolume;vtkInteractionWidgets;vtkViewsCore;vtklibproj;vtkGeovisCore;/usr/local/lib/libhdf5.dylib;/usr/local/lib/libsz.dylib;/usr/lib/libdl.dylib;/usr/lib/libm.dylib;/usr/local/lib/libhdf5_hl.dylib;vtkIOAMR;vtkIOAsynchronous;vtkpugixml;vtkIOCityGML;vtkIOEnSight;/usr/local/lib/libnetcdf.dylib;vtkexodusII;vtkIOExodus;vtkgl2ps;vtkRenderingGL2PSOpenGL2;vtkIOExport;vtkIOExportOpenGL2;vtklibharu;vtkIOExportPDF;vtkIOGeometry;vtkIOImport;/usr/lib/libxml2.dylib;vtkIOInfovis;vtkIOLSDyna;vtkIOMINC;vtkogg;vtktheora;vtkIOMovie;vtkIONetCDF;vtkIOPLY;vtkjsoncpp;vtkIOParallel;vtkIOParallelXML;vtkIOSegY;vtkIOTecplotTable;vtkIOVeraOut;vtkIOVideo;vtkImagingMath;vtkImagingMorphological;vtkImagingStatistics;vtkImagingStencil;vtkInfovisBoostGraphAlgorithms;vtkInteractionImage;vtkPythonContext2D;vtkRenderingContextOpenGL2;vtkRenderingFreeTypeFontConfig;vtkRenderingImage;vtkRenderingLOD;vtkRenderingLabel;vtkRenderingQt;vtkRenderingVolumeOpenGL2;vtkViewsContext2D;vtkViewsInfovis;vtkViewsQt (Required is at least version "1.9") 
+-- Found OpenCV: /usr/local/Cellar/opencv@3/3.4.5_1 (found suitable version "3.4.5", minimum required is "3.1") 
+-- Found Eigen: /usr/local/include/eigen3 (Required is at least version "3") 
+-- Eigen found (include: /usr/local/include/eigen3, version: 3.3.7)
+-- Found G2O
+-- Configuring done
+WARNING: Target "testT" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "testT" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "testT" requests linking to directory "/usr/local/Cellar/suite-sparse/5.3.0/lib/".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "pose_estimation" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "pose_estimation" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "pose_estimation" requests linking to directory "/usr/local/Cellar/suite-sparse/5.3.0/lib/".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "myG2Oedge" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "myG2Oedge" requests linking to directory "/usr/local/Cellar/suite-sparse/5.3.0/lib/".  Targets may link only to libraries.  CMake is dropping the item.
+WARNING: Target "slamBase" requests linking to directory "/usr/local/Cellar/pcl/1.9.1_4/lib".  Targets may link only to libraries.  CMake is dropping the item.
+-- Generating done
+-- Build files have been written to: /Users/lingqiujin/work/myVOsum/cmake-build-debug

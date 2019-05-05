@@ -1,2 +1,2 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libpose_estimation.a  CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib ../../lib/libpose_estimation.a
+/usr/bin/ar qc ../../lib/libpose_estimation.a  CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
+/usr/bin/ranlib ../../lib/libpose_estimation.a

@@ -2,6 +2,10 @@ clear
 % clc
 % d = load('/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0080.dat');
 d= load('/Users/lingqiujin/Data/RV_Data2/d1_0302.dat');
+<<<<<<< HEAD
+d= load('/Users/lingqiujin/Data/test4K/dt_0003.dat');
+=======
+>>>>>>> 6a5745189c2f47c460c64ef623870081001f747a
 z = d(1:144,:);
 x = d(1*144+1:2*144,:);
 y = d(2*144+1:3*144,:);
@@ -10,9 +14,9 @@ y = d(2*144+1:3*144,:);
 % z(1:70,80:170)=0;
 % y(1:70,80:170)=0;
 
-c = d(3*144+1:4*144,:);
-% c = imadjust(c);
-% imshow(c)
+c = uint8(d(3*144+1:4*144,:)/(8));
+imshow(c)
+%%
 conf = d(4*144+1:5*144,:);
 
 CC = reshape(d(3*144+1:4*144,:),[1,144*176]);
@@ -49,27 +53,30 @@ xyzPoints = xyzPoints(Z(:)~=0,:);
 figure,pcshow(pointCloud(xyzPoints))
 
 %%
+close all
 
-d = load('/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_0080.dat');
+d = load('/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_0033.dat');
 
 z = d(1:144,:);
+H = fspecial('gaussian',3,1);
+z = imfilter(z,H,'replicate'); 
 x = d(1*144+1:2*144,:);
 y = d(2*144+1:3*144,:);
 
-% x(1:70,80:170)=0;
-% z(1:70,80:170)=0;
-% y(1:70,80:170)=0;
-
-
-c = d(3*144+1:4*144,:);
-base = ceil(log(max(max(c)))/log(2))-8;
-% c = uint16(c);
-c = uint8(c / (2^base));
+x(1:80,60:176)=0;
+z(1:80,60:176)=0;
+y(1:80,60:176)=0;
+surf(z)
+% 
+% c = d(3*144+1:4*144,:);
+% base = ceil(log(max(max(c)))/log(2))-8;
+% % c = uint16(c);
+% c = uint8(c / 5);
 % c = imadjust(c);
-imshow(c)
-conf = d(4*144+1:5*144,:);
-
-CC = reshape(d(3*144+1:4*144,:),[1,144*176]);
+% imshow(c)
+% conf = d(4*144+1:5*144,:);
+% 
+% CC = reshape(d(3*144+1:4*144,:),[1,144*176]);
 z = reshape(z,[1,144*176]);
 x = reshape(x,[1,144*176]);
 y = reshape(y,[1,144*176]);
@@ -77,7 +84,7 @@ y = reshape(y,[1,144*176]);
 pc2 = pointCloud([x;y;z]');
 [pc2,indices] = removeInvalidPoints(pc2);
 
-% figure,pcshow(pc2)
+figure,pcshow(pc2)
 
 %%
 tform = pcregistericp(pc1,pc2);
@@ -138,7 +145,11 @@ c_y = cy/k
 Files=dir('/Users/lingqiujin/Data/RV_Data2/*.dat');
 %     Files=dir([char(dir_name),'/color/*.jpg']);
 sumImage = zeros;
+<<<<<<< HEAD
+for k=1:590
+=======
 for k=1:1100
+>>>>>>> 6a5745189c2f47c460c64ef623870081001f747a
     d = load([Files(k).folder '/' Files(k).name]);
     c = uint8(d(3*144+1:4*144,:)/(32));
 %     c = im2uint8(uint16(d(3*144+1:4*144,:)));
@@ -147,18 +158,33 @@ for k=1:1100
     ffname = ['/Users/lingqiujin/Data/RV_Data2/color/' int2str(k) '.png'];
 %     ffname(end-2:end)='png';
     imwrite(c, ffname)
-    
-    z = 1000*d(1:144,:);
-    z = uint16(z);
-    ffname = ['/Users/lingqiujin/Data/RV_Data/Pitch/37/depth/' int2str(k) '.png'];
-%     ffname(end-2:end)='png';
-    imwrite(z, ffname)
+%     
+%     z = 1000*d(1:144,:);
+%     z = uint16(z);
+%     ffname = ['/Users/lingqiujin/Data/RV_Data/Pitch/37/depth/' int2str(k) '.png'];
+% %     ffname(end-2:end)='png';
+%     imwrite(z, ffname)
 end
 
 %%
+<<<<<<< HEAD
+close all  
+pc1= pcread('/Users/lingqiujin/Q_MAC/work/mySLAM/build/3.pcd');
+pc2= pcread('/Users/lingqiujin/Q_MAC/work/mySLAM/build/4.pcd');
+pc3= pcread('/Users/lingqiujin/Q_MAC/work/mySLAM/build/5.pcd');
+pc4= pcread('/Users/lingqiujin/Q_MAC/work/mySLAM/build/6.pcd');
+
+pc = pcread('/Users/lingqiujin/Q_MAC/work/mySLAM/build/6pc_all.pcd');
+pcshowpair(pc1,pc2)
+figure,pcshowpair(pc2,pc3)
+figure,pcshowpair(pc3,pc4)
+
+% figure,pcshowpair(pc2,pc)
+=======
     
 pc1= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc1.pcd');
 pc2= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc2.pcd');
 pc= pcread('/Users/lingqiujin/Q_MAC/work/myVOsum/build/pc_12.pcd');
 pcshowpair(pc1,pc)
 figure,pcshowpair(pc2,pc)
+>>>>>>> 6a5745189c2f47c460c64ef623870081001f747a

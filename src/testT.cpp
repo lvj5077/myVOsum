@@ -44,28 +44,6 @@ int main( int argc, char** argv )
     C_sr4k.exp = 8;
 
 
-    // string firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0002.dat";
-    // string secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_0004.dat";
-
-    string firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_0021.dat";
-    string secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_0002.dat";
-
-    // Mat rgb1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.475318.png", CV_LOAD_IMAGE_COLOR );
-    // Mat rgb2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.911185.png", CV_LOAD_IMAGE_COLOR );
-
-    // Mat depth1 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031102.462395.png", CV_LOAD_IMAGE_UNCHANGED ); 
-    // Mat depth2 = imread ( "/Users/lingqiujin/Data/rgbd_dataset_freiburg1_xyz/depth/1305031102.926851.png", CV_LOAD_IMAGE_UNCHANGED );
-
-
-    Mat rgb1 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/28/color/1.png", CV_LOAD_IMAGE_COLOR );
-    Mat depth1 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/28/depth/1.png", CV_LOAD_IMAGE_UNCHANGED ); 
-
-    Mat rgb2 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/22/color/1.png", CV_LOAD_IMAGE_COLOR );
-    Mat depth2 = imread ( "/Users/lingqiujin/Data/RV_Data1_Test/22/depth/1.png", CV_LOAD_IMAGE_UNCHANGED );
-    // Mat rgb2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/40/color/100.png", CV_LOAD_IMAGE_COLOR );
-    // Mat depth2 = imread ( "/Users/lingqiujin/Data/RV_Data/Pitch/40/depth/100.png", CV_LOAD_IMAGE_UNCHANGED );
-
-
     vector<Point2f> p_UVs1, p_UVs2;
     vector<Point3f> p_XYZs1, p_XYZs2;
 
@@ -77,7 +55,7 @@ int main( int argc, char** argv )
     float sy;
     CAMERA_INTRINSIC_PARAMETERS C;
 
-    int dataSize = 1;
+    int dataSize = 50;
     int myFakedata = 0;
     int randomNoise = 0;
     int mismatch = 0;
@@ -94,45 +72,48 @@ int main( int argc, char** argv )
     cv::Mat my(cv::Size(dataSize,1),CV_64FC1, Scalar(0));
     cv::Mat mz(cv::Size(dataSize,1),CV_64FC1, Scalar(0));
 
+    string firstF,secondF;
+
+    cout << "start!"<<endl<<endl;
     for (int idx=1;idx<dataSize+1;idx++){
 
+        // if (idx<10){
+        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+        // }else{
+        //     firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+        // }
+        
+        // if (idx<10){
+        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+        // }else{
+        //     secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+        // }
+
+
+        firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0099.dat";
+        secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0009.dat";
         if (idx<10){
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_000"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_000"+to_string(idx)+".dat";
         }else{
-            firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_00"+to_string(idx)+".dat";
+            firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_00"+to_string(idx)+".dat";
         }
         
         if (idx<10){
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_000"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_000"+to_string(idx)+".dat";
         }else{
-            secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d5_-28/d5_00"+to_string(idx)+".dat";
+            secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y2/frm_00"+to_string(idx)+".dat";
         }
 
-
-        // firstF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0099.dat";
-        // secondF = "/Users/lingqiujin/Data/RV_Data1_Test/d7_-22/d7_0009.dat";
         // if (idx<10){
-        //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_000"+to_string(idx)+".dat";
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Yaw/d1_44/d1_000"+to_string(idx)+".dat";
         // }else{
-        //     firstF = "/Users/lingqiujin/Data/RV_Data/Translation/Y1/frm_00"+to_string(idx)+".dat";
+        //     firstF = "/Users/lingqiujin/Data/RV_Data/Yaw/d1_44/d1_00"+to_string(idx)+".dat";
         // }
         
         // if (idx<10){
-        //     secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y3/frm_000"+to_string(idx)+".dat";
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Yaw/d2_41/d2_000"+to_string(idx)+".dat";
         // }else{
-        //     secondF = "/Users/lingqiujin/Data/RV_Data/Translation/Y3/frm_00"+to_string(idx)+".dat";
-        // }
-
-        // if (idx<10){
-        //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_000"+to_string(idx)+".dat";
-        // }else{
-        //     firstF = "/Users/lingqiujin/Data/RV_Data/Pitch/d1_-40/d1_00"+to_string(idx)+".dat";
-        // }
-        
-        // if (idx<10){
-        //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_000"+to_string(idx)+".dat";
-        // }else{
-        //     secondF = "/Users/lingqiujin/Data/RV_Data/Pitch/d2_-37/d2_00"+to_string(idx)+".dat";
+        //     secondF = "/Users/lingqiujin/Data/RV_Data/Yaw/d2_41/d2_00"+to_string(idx)+".dat";
         // }
 
         cout << endl<<"load "<<firstF<<endl;
@@ -160,32 +141,15 @@ int main( int argc, char** argv )
         
         myBase_SR4k.find4kMatches(f1_4k.rgb,f2_4k.rgb,f1_4k.depthXYZ,f2_4k.depthXYZ,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
 
-        string rgb1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/color/"+to_string(idx)+".png";
-        string rgb2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/color/"+to_string(idx)+".png";
-        string depth1_str = "/Users/lingqiujin/Data/RV_Data1_Test/28/depth/"+to_string(idx)+".png";
-        string depth2_str = "/Users/lingqiujin/Data/RV_Data1_Test/22/depth/"+to_string(idx)+".png";
-
-        rgb1 = imread ( rgb1_str, CV_LOAD_IMAGE_COLOR );
-        rgb2 = imread ( rgb2_str, CV_LOAD_IMAGE_COLOR );
-        depth1 = imread ( depth1_str, CV_LOAD_IMAGE_UNCHANGED ); 
-        depth2 = imread ( depth2_str, CV_LOAD_IMAGE_UNCHANGED );
-
-        // myBase_SR4k.findMatches(f1_4k.rgb,f2_4k.rgb,depth1,depth2,p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-        // myBase_SR4k.findMatches(f2_4k.rgb,f1_4k.rgb,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-        // myBase_SR4k.findMatches(rgb1,rgb2,f2_4k.z,f1_4k.z, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-        // myBase_SR4k.findMatches(rgb1,rgb2,depth1,depth2, p_UVs1,p_UVs2,p_XYZs1,p_XYZs2);
-
-        // cout << "3d-3d =========================================" <<endl;
-        // for (int i =0;i<5;i++){
-        //     cout << p_XYZs1[i]<<"  "<<p_XYZs2[i] <<"    "<< p_UVs1[i]<<"  "<<p_UVs2[i] <<endl;
-        // }
-
-        float myRoll = 6*3.1415926/180;
+        float myRoll = 0*3.1415926/180;
         float myPitch = 0*3.1415926/180;
         float myYaw = 0*3.1415926/180;
         Mat myR = myBase_SR4k.eulerAnglesToRotationMatrix(myRoll, myPitch, myYaw);
         Mat Tgt = cv::Mat::eye(4,4,CV_64F);
         myR.copyTo(Tgt(cv::Rect(0, 0, 3, 3)));
+        Tgt.at<double>(0,3) = 0.0;
+        Tgt.at<double>(1,3) = 0.0;
+        Tgt.at<double>(2,3) = 0.0;
 
         vector<Point3f> p_XYZs;
         vector<Point3f> p_XYZst;
@@ -280,7 +244,8 @@ int main( int argc, char** argv )
             cout << "RANSACpose3d3d_SVD error " <<endl<< 1000*rpE<< " mm"<<endl<<endl;
             break;
           case '5' :
-            cv::estimateAffine3D(p_XYZs2,p_XYZs1, outM3by4G, inliers3dG, 0.5, 0.8); 
+            // cv::estimateAffine3D(p_XYZs2,p_XYZs1, outM3by4G, inliers3dG, 0.5, 0.8); 
+            myVO_SR4k.pose3d2d_BA(p_XYZs2, p_UVs1, mat_r, vec_t, T, cameraMatrix_4k );
             myBase_SR4k.rotMtoRPY(outM3by4G, roll, pitch, yaw);
             cout << "roll " << roll<<" pitch " << pitch<<" yaw " << yaw<<endl;
             break;

@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/local/bin/cmake
+CMAKE_COMMAND = /usr/local/Cellar/cmake/3.14.3/bin/cmake
 
 # The command to remove a file.
-RM = /opt/local/bin/cmake -E remove -f
+RM = /usr/local/Cellar/cmake/3.14.3/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum
+CMAKE_SOURCE_DIR = /Users/lingqiujin/work/myVOsum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
+CMAKE_BINARY_DIR = /Users/lingqiujin/work/myVOsum/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.14.3/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/opt/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.14.3/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles /Users/lingqiujin/Q_MAC/work/myVOsum/build/src/CMakeFiles/progress.marks
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
+	cd /Users/lingqiujin/work/myVOsum/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/work/myVOsum/build/CMakeFiles /Users/lingqiujin/work/myVOsum/build/src/CMakeFiles/progress.marks
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/work/myVOsum/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/clean
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/lingqiujin/work/myVOsum/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/CMakeFiles/testT.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/testT.dir/rule
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/testT.dir/rule
 .PHONY : src/CMakeFiles/testT.dir/rule
 
 # Convenience name for target.
@@ -122,12 +122,12 @@ testT: src/CMakeFiles/testT.dir/rule
 
 # fast build rule for target.
 testT/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/build
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/build
 .PHONY : testT/fast
 
 # Convenience name for target.
 src/CMakeFiles/pose_estimation.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/pose_estimation.dir/rule
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/pose_estimation.dir/rule
 .PHONY : src/CMakeFiles/pose_estimation.dir/rule
 
 # Convenience name for target.
@@ -137,27 +137,12 @@ pose_estimation: src/CMakeFiles/pose_estimation.dir/rule
 
 # fast build rule for target.
 pose_estimation/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/build
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/build
 .PHONY : pose_estimation/fast
 
 # Convenience name for target.
-src/CMakeFiles/mySLAM.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/mySLAM.dir/rule
-.PHONY : src/CMakeFiles/mySLAM.dir/rule
-
-# Convenience name for target.
-mySLAM: src/CMakeFiles/mySLAM.dir/rule
-
-.PHONY : mySLAM
-
-# fast build rule for target.
-mySLAM/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/build
-.PHONY : mySLAM/fast
-
-# Convenience name for target.
 src/CMakeFiles/myG2Oedge.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/myG2Oedge.dir/rule
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/myG2Oedge.dir/rule
 .PHONY : src/CMakeFiles/myG2Oedge.dir/rule
 
 # Convenience name for target.
@@ -167,12 +152,12 @@ myG2Oedge: src/CMakeFiles/myG2Oedge.dir/rule
 
 # fast build rule for target.
 myG2Oedge/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/build
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/build
 .PHONY : myG2Oedge/fast
 
 # Convenience name for target.
 src/CMakeFiles/slamBase.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/slamBase.dir/rule
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/slamBase.dir/rule
 .PHONY : src/CMakeFiles/slamBase.dir/rule
 
 # Convenience name for target.
@@ -182,12 +167,12 @@ slamBase: src/CMakeFiles/slamBase.dir/rule
 
 # fast build rule for target.
 slamBase/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/build
 .PHONY : slamBase/fast
 
 # Convenience name for target.
 src/CMakeFiles/main.dir/rule:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/main.dir/rule
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/main.dir/rule
 .PHONY : src/CMakeFiles/main.dir/rule
 
 # Convenience name for target.
@@ -197,7 +182,7 @@ main: src/CMakeFiles/main.dir/rule
 
 # fast build rule for target.
 main/fast:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/build
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/build
 .PHONY : main/fast
 
 main.o: main.cpp.o
@@ -206,7 +191,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.o
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -215,7 +200,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.i
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -224,7 +209,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.s
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 myG2Oedge.o: myG2Oedge.cpp.o
@@ -233,7 +218,7 @@ myG2Oedge.o: myG2Oedge.cpp.o
 
 # target to build an object file
 myG2Oedge.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.o
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.o
 .PHONY : myG2Oedge.cpp.o
 
 myG2Oedge.i: myG2Oedge.cpp.i
@@ -242,7 +227,7 @@ myG2Oedge.i: myG2Oedge.cpp.i
 
 # target to preprocess a source file
 myG2Oedge.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.i
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.i
 .PHONY : myG2Oedge.cpp.i
 
 myG2Oedge.s: myG2Oedge.cpp.s
@@ -251,35 +236,8 @@ myG2Oedge.s: myG2Oedge.cpp.s
 
 # target to generate assembly for a file
 myG2Oedge.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.s
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/myG2Oedge.dir/build.make src/CMakeFiles/myG2Oedge.dir/myG2Oedge.cpp.s
 .PHONY : myG2Oedge.cpp.s
-
-mySLAM.o: mySLAM.cpp.o
-
-.PHONY : mySLAM.o
-
-# target to build an object file
-mySLAM.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.o
-.PHONY : mySLAM.cpp.o
-
-mySLAM.i: mySLAM.cpp.i
-
-.PHONY : mySLAM.i
-
-# target to preprocess a source file
-mySLAM.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.i
-.PHONY : mySLAM.cpp.i
-
-mySLAM.s: mySLAM.cpp.s
-
-.PHONY : mySLAM.s
-
-# target to generate assembly for a file
-mySLAM.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/mySLAM.cpp.s
-.PHONY : mySLAM.cpp.s
 
 pose_estimation.o: pose_estimation.cpp.o
 
@@ -287,7 +245,7 @@ pose_estimation.o: pose_estimation.cpp.o
 
 # target to build an object file
 pose_estimation.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.o
 .PHONY : pose_estimation.cpp.o
 
 pose_estimation.i: pose_estimation.cpp.i
@@ -296,7 +254,7 @@ pose_estimation.i: pose_estimation.cpp.i
 
 # target to preprocess a source file
 pose_estimation.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.i
 .PHONY : pose_estimation.cpp.i
 
 pose_estimation.s: pose_estimation.cpp.s
@@ -305,7 +263,7 @@ pose_estimation.s: pose_estimation.cpp.s
 
 # target to generate assembly for a file
 pose_estimation.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/pose_estimation.dir/build.make src/CMakeFiles/pose_estimation.dir/pose_estimation.cpp.s
 .PHONY : pose_estimation.cpp.s
 
 slamBase.o: slamBase.cpp.o
@@ -314,7 +272,7 @@ slamBase.o: slamBase.cpp.o
 
 # target to build an object file
 slamBase.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.o
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.o
 .PHONY : slamBase.cpp.o
 
 slamBase.i: slamBase.cpp.i
@@ -323,7 +281,7 @@ slamBase.i: slamBase.cpp.i
 
 # target to preprocess a source file
 slamBase.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.i
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.i
 .PHONY : slamBase.cpp.i
 
 slamBase.s: slamBase.cpp.s
@@ -332,7 +290,7 @@ slamBase.s: slamBase.cpp.s
 
 # target to generate assembly for a file
 slamBase.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.s
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/slamBase.dir/build.make src/CMakeFiles/slamBase.dir/slamBase.cpp.s
 .PHONY : slamBase.cpp.s
 
 testT.o: testT.cpp.o
@@ -341,7 +299,7 @@ testT.o: testT.cpp.o
 
 # target to build an object file
 testT.cpp.o:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.o
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.o
 .PHONY : testT.cpp.o
 
 testT.i: testT.cpp.i
@@ -350,7 +308,7 @@ testT.i: testT.cpp.i
 
 # target to preprocess a source file
 testT.cpp.i:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.i
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.i
 .PHONY : testT.cpp.i
 
 testT.s: testT.cpp.s
@@ -359,7 +317,7 @@ testT.s: testT.cpp.s
 
 # target to generate assembly for a file
 testT.cpp.s:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.s
+	cd /Users/lingqiujin/work/myVOsum/build && $(MAKE) -f src/CMakeFiles/testT.dir/build.make src/CMakeFiles/testT.dir/testT.cpp.s
 .PHONY : testT.cpp.s
 
 # Help Target
@@ -371,7 +329,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... testT"
 	@echo "... pose_estimation"
-	@echo "... mySLAM"
 	@echo "... myG2Oedge"
 	@echo "... edit_cache"
 	@echo "... slamBase"
@@ -382,9 +339,6 @@ help:
 	@echo "... myG2Oedge.o"
 	@echo "... myG2Oedge.i"
 	@echo "... myG2Oedge.s"
-	@echo "... mySLAM.o"
-	@echo "... mySLAM.i"
-	@echo "... mySLAM.s"
 	@echo "... pose_estimation.o"
 	@echo "... pose_estimation.i"
 	@echo "... pose_estimation.s"
@@ -405,6 +359,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/lingqiujin/Q_MAC/work/myVOsum/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/lingqiujin/work/myVOsum/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/local/bin/cmake
+CMAKE_COMMAND = /usr/local/Cellar/cmake/3.14.3/bin/cmake
 
 # The command to remove a file.
-RM = /opt/local/bin/cmake -E remove -f
+RM = /usr/local/Cellar/cmake/3.14.3/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum
+CMAKE_SOURCE_DIR = /Users/lingqiujin/work/myVOsum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
+CMAKE_BINARY_DIR = /Users/lingqiujin/work/myVOsum/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /Users/lingqiujin/Q_MAC/work/myVOsum/build
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.14.3/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/opt/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.14.3/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/work/myVOsum/build/CMakeFiles /Users/lingqiujin/work/myVOsum/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/Q_MAC/work/myVOsum/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/lingqiujin/work/myVOsum/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -137,19 +137,6 @@ pose_estimation/fast:
 .PHONY : pose_estimation/fast
 
 #=============================================================================
-# Target rules for targets named mySLAM
-
-# Build rule for target.
-mySLAM: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mySLAM
-.PHONY : mySLAM
-
-# fast build rule for target.
-mySLAM/fast:
-	$(MAKE) -f src/CMakeFiles/mySLAM.dir/build.make src/CMakeFiles/mySLAM.dir/build
-.PHONY : mySLAM/fast
-
-#=============================================================================
 # Target rules for targets named myG2Oedge
 
 # Build rule for target.
@@ -198,7 +185,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... testT"
 	@echo "... pose_estimation"
-	@echo "... mySLAM"
 	@echo "... myG2Oedge"
 	@echo "... slamBase"
 	@echo "... main"

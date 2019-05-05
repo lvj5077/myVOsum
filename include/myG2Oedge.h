@@ -31,36 +31,37 @@
 using namespace std;
 
 // g2o edge
-class EdgeProjectXYZRGBDPoseAndPts : public g2o::BaseBinaryEdge<3, Eigen::Vector3d,g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>
+class EdgeProjectXYZRGBDPoseAndPts : public g2o::BaseBinaryEdge<3, Eigen::Vector3d, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
-    EdgeProjectXYZRGBDPoseAndPts( ) {}
+    EdgeProjectXYZRGBDPoseAndPts() {}
     // EdgeProjectXYZRGBDPoseAndPts( const Eigen::Vector3d& point ) : _point(point) {}
 
     void computeError();
 
     void linearizeOplus();
 
-    bool read ( istream& in ) {}
-    bool write ( ostream& out ) const {}
+    bool read(istream &in) {}
+    bool write(ostream &out) const {}
+
 protected:
     Eigen::Vector3d _point;
 };
-
 
 class EdgeProjectXYZRGBDPoseOnly : public g2o::BaseUnaryEdge<3, Eigen::Vector3d, g2o::VertexSE3Expmap>
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
-    EdgeProjectXYZRGBDPoseOnly( const Eigen::Vector3d& point ) : _point(point) {}
+    EdgeProjectXYZRGBDPoseOnly(const Eigen::Vector3d &point) : _point(point) {}
 
     void computeError();
 
     void linearizeOplus();
 
-    bool read ( istream& in ) {}
-    bool write ( ostream& out ) const {}
+    bool read(istream &in) {}
+    bool write(ostream &out) const {}
+
 protected:
     Eigen::Vector3d _point;
 };

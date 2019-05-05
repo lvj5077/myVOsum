@@ -1,9 +1,0 @@
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/testT.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/pose_estimation.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/myG2Oedge.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/edit_cache.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/slamBase.dir
-/Users/lingqiujin/work/myVOsum/cmake-build-debug/src/CMakeFiles/main.dir
